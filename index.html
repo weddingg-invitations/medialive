@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Точный учёт времени — Я и Замена (30/30)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', 'Inter', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #e8eef4 0%, #d4dfe9 100%);
+            margin: 0;
+            padding: 24px 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 850px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 28px 30px 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+        h1 {
+            font-size: 1.8rem;
+            margin: 0 0 8px 0;
+            color: #1a3a2a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+        .desc {
+            font-size: 0.85rem;
+            color: #4a6a5a;
+            margin-bottom: 24px;
+            border-left: 4px solid #4caf7a;
+            padding-left: 14px;
+            background: #f5faf7;
+            border-radius: 0 16px 16px 0;
+            line-height: 1.4;
+        }
+        .segments-list {
+            margin: 20px 0 16px;
+            padding-right: 8px;
+        }
+        .segment-row {
+            background: #f8fafc;
+            padding: 14px 18px;
+            border-radius: 24px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+        .segment-row:hover {
+            border-color: #cbd5e1;
+            background: #fefefe;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+        .time-pair {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #ffffff;
+            padding: 6px 18px 6px 20px;
+            border-radius: 60px;
+            border: 1px solid #cbd5e1;
+            box-shadow: inset 0 1px 1px #fff, 0 1px 2px rgba(0,0,0,0.02);
+        }
+        .time-pair span {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #2c5a3e;
+            letter-spacing: -0.2px;
+        }
+        .time-pair input {
+            width: 82px;
+            padding: 8px 6px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 1rem;
+            text-align: center;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .time-pair input:focus {
+            background: #ecfdf5;
+            border-radius: 40px;
+            outline: 2px solid #4caf7a;
+        }
+        .remove-btn {
+            background: #f1f5f9;
+            color: #e26d5c;
+            border: 1px solid #e2e8f0;
+            border-radius: 40px;
+            padding: 8px 20px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: auto;
+            transition: all 0.15s;
+            backdrop-filter: blur(2px);
+        }
+        .remove-btn:hover {
+            background: #fee2e2;
+            border-color: #fecaca;
+            color: #b91c1c;
+            transform: scale(0.96);
+        }
+        .add-btn {
+            background: linear-gradient(105deg, #3b8b5e 0%, #2c6e4a 100%);
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 12px 20px;
+            margin-top: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            width: 100%;
+            transition: 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .add-btn:hover {
+            background: linear-gradient(105deg, #2e7a52 0%, #235f3f 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 16px rgba(60, 110, 70, 0.2);
+        }
+        .calc-btn {
+            background: linear-gradient(105deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 14px 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            transition: 0.2s;
+            box-shadow: 0 6px 12px rgba(245, 158, 11, 0.2);
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .calc-btn:hover {
+            background: linear-gradient(105deg, #e68a00 0%, #c2410c 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 12px 20px rgba(245, 158, 11, 0.25);
+        }
+        .result {
+            background: #f9fbfd;
+            border-radius: 28px;
+            padding: 20px 24px;
+            margin-top: 28px;
+            border: 1px solid #eef2f6;
+            box-shadow: inset 0 1px 2px #fff, 0 6px 12px rgba(0,0,0,0.02);
+        }
+        .result-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            border: 1px solid #edf2f7;
+            transition: all 0.1s;
+        }
+        .result-card p {
+            margin: 0 0 8px 0;
+            color: #2d4a3a;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: -0.2px;
+        }
+        .big-number {
+            font-size: 2rem;
+            font-weight: 800;
+            font-family: monospace;
+            color: #1f3b2c;
+        }
+        .detail-number {
+            font-size: 1.35rem;
+            font-family: 'SF Mono', monospace;
+            font-weight: 600;
+            background: #f1f5f9;
+            padding: 6px 16px;
+            border-radius: 60px;
+            display: inline-block;
+            color: #2c5f43;
+        }
+        .total-line {
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-top: 1px solid #e2edf2;
+            padding-top: 16px;
+            margin-top: 12px;
+            color: #1e3a2f;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+        }
+        .info-note {
+            background: #fefce8;
+            font-size: 0.72rem;
+            padding: 12px 18px;
+            border-radius: 24px;
+            margin-top: 22px;
+            text-align: center;
+            color: #5a6e4a;
+            border: 1px solid #e9f0e3;
+        }
+        .diff-positive {
+            background: #e0f2e9;
+            padding: 12px 16px;
+            border-radius: 60px;
+            text-align: center;
+            margin-top: 14px;
+            font-weight: 700;
+            color: #2b6e3c;
+            border-left: 5px solid #3ba55d;
+        }
+        .diff-negative {
+            background: #fff0eb;
+            padding: 12px 16px;
+            border-radius: 60px;
+            text-align: center;
+            margin-top: 14px;
+            font-weight: 700;
+            color: #b45a3a;
+            border-left: 5px solid #e68a2e;
+        }
+        .diff-zero {
+            background: #eef2ff;
+            padding: 12px 16px;
+            border-radius: 60px;
+            text-align: center;
+            margin-top: 14px;
+            font-weight: 700;
+            color: #2c5282;
+            border-left: 5px solid #4c9aff;
+        }
+        .inline-value {
+            font-family: monospace;
+            font-weight: 700;
+            background: #eef3fc;
+            padding: 4px 12px;
+            border-radius: 40px;
+        }
+        .segments-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .segments-list::-webkit-scrollbar-track {
+            background: #eef2f6;
+            border-radius: 10px;
+        }
+        .segments-list::-webkit-scrollbar-thumb {
+            background: #b9cfc3;
+            border-radius: 10px;
+        }
+        @media (max-width: 580px) {
+            .container { padding: 18px; }
+            .time-pair { padding: 4px 12px; }
+            .time-pair input { width: 68px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📋 Я + Замена <span style="font-size: 1rem; background: #eef3fc; padding: 4px 14px; border-radius: 40px;">30/30 чередование</span></h1>
+    <div class="desc">
+        ⚡ График: 30 мин работает Я → 30 мин работает Замена → повтор<br>
+        📌 Ты вводишь СВОИ отрезки работы (когда реально работал).<br>
+        🎯 <strong>Точный расчёт до минут — без округлений, учитывает разную длительность игр</strong>
+    </div>
+
+    <div id="segmentsContainer" class="segments-list"></div>
+
+    <button id="addSegmentBtn" class="add-btn">+ Добавить отрезок (моя работа)</button>
+    <button id="calcBtn" class="calc-btn">🧮 ТОЧНЫЙ РАСЧЁТ</button>
+
+    <div class="result" id="resultBlock">
+        <div class="result-card">
+            <div>
+                👤 МОИ ЧАСЫ <span class="detail-number" id="myMinutesDetail"></span>
+            </div>
+        </div>
+        <div class="result-card">
+            <div>
+               🔄 ЧАСЫ ЗАМЕНЫ <span class="detail-number" id="partnerMinutesDetail"></span>
+            </div>
+        </div>
+        <div class="total-line">
+            📆 ОБЩЕЕ ВРЕМЯ <span id="totalVal" class="inline-value">0.000 ч</span>
+        </div>
+        <div id="ratioInfo"></div>
+        <div id="detailMsg" style="font-size:0.75rem; margin-top:14px; color:#557c66; background:#fefaf0; padding:6px 14px; border-radius:40px;"></div>
+    </div>
+    
+    <div class="info-note">
+        💡 <strong>ТОЧНЫЙ РАСЧЁТ:</strong> время считается в минутах без округлений.<br>
+        1 ч 42 мин = 1.700 ч (102 минуты). При разной длительности игр программа честно покажет переработку или недовыработку.
+    </div>
+</div>
+
+<script>
+    // ---------- ГРАФИК 30/30 (чередование) ----------
+    const EPOCH_START = new Date(2025, 0, 1, 0, 0, 0).getTime();
+    const CYCLE_MS = 30 * 60 * 1000;
+    
+    function isMainWorkingAt(timestamp) {
+        let diff = timestamp - EPOCH_START;
+        if (diff < 0) {
+            let cycles = Math.ceil(-diff / CYCLE_MS);
+            diff += cycles * CYCLE_MS;
+        }
+        let cycleIndex = Math.floor(diff / CYCLE_MS);
+        return (cycleIndex % 2 === 0);
+    }
+    
+    function getWorkIntervals(globalStart, globalEnd, isMain) {
+        if (globalStart >= globalEnd) return [];
+        let intervals = [];
+        let current = globalStart;
+        
+        while (current < globalEnd) {
+            let workerNow = isMainWorkingAt(current);
+            if (workerNow === isMain) {
+                let blockStart = current;
+                let diffFromEpoch = current - EPOCH_START;
+                let cyclesPassed = Math.floor(diffFromEpoch / CYCLE_MS);
+                let nextChange = EPOCH_START + (cyclesPassed + 1) * CYCLE_MS;
+                let blockEnd = Math.min(globalEnd, nextChange);
+                if (blockEnd > blockStart) {
+                    intervals.push([blockStart, blockEnd]);
+                }
+                current = blockEnd;
+            } else {
+                let diffFromEpoch = current - EPOCH_START;
+                let cyclesPassed = Math.floor(diffFromEpoch / CYCLE_MS);
+                let nextChange = EPOCH_START + (cyclesPassed + 1) * CYCLE_MS;
+                current = Math.min(globalEnd, nextChange);
+            }
+        }
+        return intervals;
+    }
+    
+    // ---------- LOCALSTORAGE ----------
+    const STORAGE_KEY = "workSegments_v6_white";
+    let segmentCounter = 0;
+    const container = document.getElementById('segmentsContainer');
+    
+    function saveToLocalStorage() {
+        const rows = document.querySelectorAll('.segment-row');
+        const segmentsData = [];
+        for (let row of rows) {
+            const startInput = row.querySelector('.start-input');
+            const endInput = row.querySelector('.end-input');
+            if (startInput && endInput) {
+                segmentsData.push({
+                    start: startInput.value,
+                    end: endInput.value
+                });
+            }
+        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(segmentsData));
+    }
+    
+    function loadFromLocalStorage() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) return null;
+        try {
+            return JSON.parse(saved);
+        } catch(e) {
+            return null;
+        }
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function parseTimeToMinutes(timeStr) {
+        if (!timeStr || timeStr.trim() === "") return null;
+        let cleaned = timeStr.trim();
+        let hours = null, minutes = null;
+        
+        let partsBySpace = cleaned.split(/\s+/);
+        if (partsBySpace.length >= 2) {
+            hours = parseInt(partsBySpace[0], 10);
+            minutes = parseInt(partsBySpace[1], 10);
+        } else {
+            let partsByColon = cleaned.split(':');
+            if (partsByColon.length >= 2) {
+                hours = parseInt(partsByColon[0], 10);
+                minutes = parseInt(partsByColon[1], 10);
+            }
+        }
+        
+        if (isNaN(hours) || isNaN(minutes)) return null;
+        if (hours < 0 || hours > 23) return null;
+        if (minutes < 0 || minutes > 59) return null;
+        return { hours, minutes };
+    }
+    
+    function getMySegmentsAsTimestamps() {
+        const rows = document.querySelectorAll('.segment-row');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        let segments = [];
+        
+        for (let row of rows) {
+            const startInput = row.querySelector('.start-input');
+            const endInput = row.querySelector('.end-input');
+            if (!startInput || !endInput) continue;
+            
+            let startStr = startInput.value.trim();
+            let endStr = endInput.value.trim();
+            if (startStr === "" || endStr === "") continue;
+            
+            let startTime = parseTimeToMinutes(startStr);
+            let endTime = parseTimeToMinutes(endStr);
+            if (!startTime || !endTime) continue;
+            
+            let startDate = new Date(today);
+            startDate.setHours(startTime.hours, startTime.minutes, 0, 0);
+            let endDate = new Date(today);
+            endDate.setHours(endTime.hours, endTime.minutes, 0, 0);
+            
+            let startMs = startDate.getTime();
+            let endMs = endDate.getTime();
+            
+            if (endMs <= startMs) {
+                endMs += 24 * 60 * 60 * 1000;
+            }
+            
+            if (endMs > startMs) {
+                segments.push({ startMs, endMs });
+            }
+        }
+        return segments;
+    }
+    
+    function getPartnerWorkMinutesInInterval(startMs, endMs) {
+        let intervals = getWorkIntervals(startMs, endMs, false);
+        let totalMs = 0;
+        for (let [intStart, intEnd] of intervals) {
+            totalMs += (intEnd - intStart);
+        }
+        return totalMs / (1000 * 60);
+    }
+    
+    function formatExactHM(minutes) {
+        let hrs = Math.floor(minutes / 60);
+        let mins = Math.round(minutes % 60);
+        if (mins === 60) {
+            hrs += 1;
+            mins = 0;
+        }
+        return `${hrs} ч ${mins} мин`;
+    }
+    
+    function calculate() {
+        const mySegments = getMySegmentsAsTimestamps();
+        
+        if (mySegments.length === 0) {
+            document.getElementById('myMinutesDetail').innerHTML = "0 ч 0 мин";
+            document.getElementById('partnerMinutesDetail').innerHTML = "0 ч 0 мин";
+            document.getElementById('totalVal').innerHTML = "0.000 ч";
+            document.getElementById('ratioInfo').innerHTML = "";
+            document.getElementById('detailMsg').innerHTML = "➕ Добавь отрезки работы через кнопку выше";
+            return;
+        }
+        
+        let myTotalMinutes = 0;
+        for (let seg of mySegments) {
+            let durationMinutes = (seg.endMs - seg.startMs) / (1000 * 60);
+            myTotalMinutes += durationMinutes;
+        }
+        
+        let globalStart = Math.min(...mySegments.map(s => s.startMs));
+        let globalEnd = Math.max(...mySegments.map(s => s.endMs));
+        let partnerTotalMinutes = getPartnerWorkMinutesInInterval(globalStart, globalEnd);
+        
+        let myHours = myTotalMinutes / 60;
+        let partnerHours = partnerTotalMinutes / 60;
+        let totalHours = myHours + partnerHours;
+        
+        document.getElementById('myMinutesDetail').innerHTML = `${formatExactHM(myTotalMinutes)}`;
+        document.getElementById('partnerMinutesDetail').innerHTML = `${formatExactHM(partnerTotalMinutes)}`;
+        document.getElementById('totalVal').innerHTML = totalHours.toFixed(3) + " ч";
+        
+        let diffMinutes = myTotalMinutes - partnerTotalMinutes;
+        let diffText = "";
+        let diffClass = "";
+        
+        if (diffMinutes > 0) {
+            diffClass = "diff-positive";
+            diffText = `🔥 ПЕРЕРАБОТКА: ты работал БОЛЬШЕ на ${formatExactHM(diffMinutes)}`;
+        } else if (diffMinutes < 0) {
+            diffClass = "diff-negative";
+            diffText = `⚠️ НЕДОВЫРАБОТКА: замена работала БОЛЬШЕ на ${formatExactHM(Math.abs(diffMinutes))} (${(Math.abs(diffMinutes)/60).toFixed(3)} ч)`;
+        } else {
+            diffClass = "diff-zero";
+            diffText = `🤝 РОВНО: вы работали одинаково (${formatExactHM(myTotalMinutes)} каждый)`;
+        }
+        
+        document.getElementById('ratioInfo').innerHTML = `<div class="${diffClass}">📊 ${diffText}</div>`;
+        
+        let startTime = new Date(globalStart).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        let endTime = new Date(globalEnd).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        let presenceMinutes = (globalEnd - globalStart) / (1000 * 60);
+        document.getElementById('detailMsg').innerHTML = `📋 Твои отрезки: ${mySegments.length} шт. | Твоё присутствие: ${startTime} – ${endTime} (${formatExactHM(presenceMinutes)}) | Замена работала ${formatExactHM(partnerTotalMinutes)} из этого времени`;
+    }
+    
+    function createSegmentRow(startVal = "", endVal = "") {
+        const id = `seg_${Date.now()}_${Math.random()}_${segmentCounter++}`;
+        const div = document.createElement('div');
+        div.className = 'segment-row';
+        
+        div.innerHTML = `
+            <div class="time-pair">
+                <span>🟢 Начало</span>
+                <input type="text" placeholder="02 06" class="start-input" value="${escapeHtml(startVal)}" maxlength="6" style="width:80px;">
+            </div>
+            <div class="time-pair">
+                <span>🔴 Конец</span>
+                <input type="text" placeholder="02 38" class="end-input" value="${escapeHtml(endVal)}" maxlength="6" style="width:80px;">
+            </div>
+            <button class="remove-btn">✖ Удалить</button>
+        `;
+        
+        const startInp = div.querySelector('.start-input');
+        const endInp = div.querySelector('.end-input');
+        startInp.addEventListener('input', () => { saveToLocalStorage(); calculate(); });
+        endInp.addEventListener('input', () => { saveToLocalStorage(); calculate(); });
+        
+        const removeBtn = div.querySelector('.remove-btn');
+        removeBtn.addEventListener('click', () => {
+            div.remove();
+            saveToLocalStorage();
+            calculate();
+        });
+        
+        return div;
+    }
+    
+    function addEmptySegment() {
+        const newRow = createSegmentRow("", "");
+        container.appendChild(newRow);
+        saveToLocalStorage();
+        calculate();
+    }
+    
+    function loadSegmentsFromStorage() {
+        const saved = loadFromLocalStorage();
+        container.innerHTML = '';
+        segmentCounter = 0;
+        
+        if (saved && saved.length > 0) {
+            for (let seg of saved) {
+                const row = createSegmentRow(seg.start || "", seg.end || "");
+                container.appendChild(row);
+            }
+        } else {
+            const defaultSegments = [
+                { start: "02 06", end: "02 38" },
+                { start: "03 09", end: "03 39" },
+                { start: "04 20", end: "05 00" }
+            ];
+            for (let seg of defaultSegments) {
+                const row = createSegmentRow(seg.start, seg.end);
+                container.appendChild(row);
+            }
+            saveToLocalStorage();
+        }
+    }
+    
+    function init() {
+        loadSegmentsFromStorage();
+        document.getElementById('addSegmentBtn').addEventListener('click', addEmptySegment);
+        document.getElementById('calcBtn').addEventListener('click', calculate);
+        calculate();
+    }
+    
+    init();
+</script>
+</body>
+</html>
