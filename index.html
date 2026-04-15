@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>WorkSwap | Баланс Я и Замена 30/30</title>
+    <title>WorkSwap | Таймер с постоянным звуком</title>
     <style>
         * {
             margin: 0;
@@ -104,9 +105,6 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        .btn:hover{
-            background: rgb(153, 255, 0);
-        }
 
         .btn-primary {
             background: linear-gradient(105deg, #1e5b9e, #6a2c5c);
@@ -115,8 +113,13 @@
             box-shadow: 0 2px 6px rgba(106, 44, 92, 0.2);
         }
 
-        .btn-primary:active { transform: scale(0.96); }
-        .btn:active { transform: scale(0.96); }
+        .btn-primary:active {
+            transform: scale(0.96);
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
 
         .date-picker {
             background: white;
@@ -136,24 +139,28 @@
             font-weight: 500;
         }
 
-        .segments-list {
-            padding: 16px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            min-height: 180px;
-        }
-
         .segment-card {
             background: #fefcff;
             border: 1px solid #eae3f0;
             border-radius: 28px;
             padding: 12px 16px;
             display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+        }
+
+        .segment-card.last-segment {
+            border: 2px solid #2c5f8a;
+            background: #f5faff;
+        }
+
+        .segment-row {
+            display: flex;
             align-items: center;
             flex-wrap: wrap;
             gap: 12px;
-            transition: all 0.2s;
         }
 
         .time-pair {
@@ -194,14 +201,13 @@
             font-size: 0.7rem;
             font-weight: 600;
             color: #bc5a5a;
-            margin-left: auto;
             cursor: pointer;
             transition: 250ms;
         }
 
         .remove-btn:hover {
-             background: #ff0000;
-             color: white;
+            background: #ff0000;
+            color: white;
         }
 
         .empty-message {
@@ -235,10 +241,136 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
-        .action-btn:active { transform: scale(0.97); }
+        .action-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* ТАЙМЕР */
+        .timer-section {
+            margin: 0 20px 20px 20px;
+            background: linear-gradient(135deg, #1e2b3c, #2c3e4e);
+            border-radius: 32px;
+            padding: 18px;
+            color: white;
+        }
+
+        .timer-title {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .timer-time {
+            font-family: 'SF Mono', 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 50px;
+            margin-bottom: 15px;
+        }
+
+        .timer-minutes-edit {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .timer-minutes-input {
+            width: 80px;
+            text-align: center;
+            font-family: monospace;
+            font-weight: 700;
+            padding: 8px;
+            border-radius: 30px;
+            border: none;
+            font-size: 1.2rem;
+            background: white;
+            color: #1e2b3c;
+        }
+
+        .timer-minutes-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .timer-control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            min-width: 100px;
+        }
+
+        .timer-control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.02);
+        }
+
+        .timer-control-btn:active {
+            transform: scale(0.98);
+        }
+
+        .timer-play {
+            background: #2e9b62;
+        }
+
+        .timer-pause {
+            background: #e07a4a;
+        }
+
+        .timer-reset {
+            background: #5c6bc0;
+        }
+
+        .timer-stop-sound {
+            background: #d32f2f;
+        }
+
+        .timer-info {
+            font-size: 0.65rem;
+            text-align: center;
+            margin-top: 12px;
+            opacity: 0.7;
+        }
+
+        .alarm-active {
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
 
         .result-card {
-            margin: 12px 20px 24px 20px;
+            margin: 12px 20px 20px 20px;
             background: #fbfaff;
             border-radius: 32px;
             padding: 18px;
@@ -286,9 +418,23 @@
             font-size: 0.8rem;
         }
 
-        .positive { background: #e2f3e4; color: #1a6e3a; border-left: 4px solid #2e9b62; }
-        .negative { background: #ffe6e2; color: #bc4e2e; border-left: 4px solid #e07a4a; }
-        .zero { background: #eef2fc; color: #2c5f8a; border-left: 4px solid #5c9bd5; }
+        .positive {
+            background: #e2f3e4;
+            color: #1a6e3a;
+            border-left: 4px solid #2e9b62;
+        }
+
+        .negative {
+            background: #ffe6e2;
+            color: #bc4e2e;
+            border-left: 4px solid #e07a4a;
+        }
+
+        .zero {
+            background: #eef2fc;
+            color: #2c5f8a;
+            border-left: 4px solid #5c9bd5;
+        }
 
         .footnote {
             font-size: 0.65rem;
@@ -298,452 +444,741 @@
         }
 
         @media (max-width: 450px) {
-            body { padding: 12px; }
-            .segment-card { flex-direction: column; align-items: stretch; }
-            .time-pair { justify-content: space-between; }
-            .remove-btn { margin-left: 0; text-align: center; }
-            .date-section { flex-direction: column; align-items: stretch; }
-            .date-buttons { justify-content: center; }
+            body {
+                padding: 12px;
+            }
+
+            .segment-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .time-pair {
+                justify-content: space-between;
+            }
+
+            .remove-btn {
+                text-align: center;
+            }
+
+            .date-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .date-buttons {
+                justify-content: center;
+            }
+
+            .timer-time {
+                font-size: 1.8rem;
+            }
+
+            .timer-control-btn {
+                padding: 8px 16px;
+                min-width: 80px;
+            }
         }
     </style>
 </head>
+
 <body>
-<div class="app-container">
-    <div class="app-header">
-        <div class="title-row">
-            <h1>⚖️ WorkSwap</h1>
-            <span class="badge">30/30 чередование</span>
+    <div class="app-container">
+        <div class="app-header">
+            <div class="title-row">
+                <h1>⚖️ WorkSwap</h1>
+                <span class="badge">30/30 чередование</span>
+            </div>
+            <div class="sub">📌 Таймер НЕЗАВИСИМЫЙ. При срабатывании — ПОСТОЯННЫЙ ЗВУК до отключения.</div>
         </div>
-        <div class="sub">📌 Я работаю 30 мин → Замена 30 мин. Каждый день — свои отрезки. Данные сохраняются в браузере.</div>
+
+        <div class="date-section">
+            <div class="date-buttons">
+                <button class="btn" id="prevDayBtn">◀ Вчера</button>
+                <button class="btn" id="nextDayBtn">Завтра ▶</button>
+                <button class="btn btn-primary" id="todayBtn">Сегодня</button>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <input type="date" id="datePicker" class="date-picker">
+                <span id="currentDateBadge" class="date-badge">сегодня</span>
+            </div>
+        </div>
+
+        <div id="segmentsContainer" class="segments-list"></div>
+
+        <div class="action-buttons">
+            <button id="addSegmentBtn" class="action-btn">+ Добавить мой отрезок</button>
+            <button id="calcBtn" class="action-btn" style="background: linear-gradient(105deg, #2a5580, #8a3a78);">📊
+                ТОЧНЫЙ РАСЧЁТ</button>
+        </div>
+
+        <!-- ТАЙМЕР -->
+        <div class="timer-section" id="timerSection">
+            <div class="timer-title">⏱️ ТАЙМЕР (независимый)</div>
+            <div class="timer-time" id="timerDisplay">23 : 00</div>
+            <div class="timer-minutes-edit">
+                <input type="number" id="timerMinutesInput" class="timer-minutes-input" value="23" min="1" max="180"
+                    step="1">
+                <span class="timer-minutes-label">минут</span>
+            </div>
+            <div class="timer-controls">
+                <button class="timer-control-btn timer-play" id="timerPlayBtn">▶ PLAY</button>
+                <button class="timer-control-btn timer-pause" id="timerPauseBtn">⏸ ПАУЗА</button>
+                <button class="timer-control-btn timer-reset" id="timerResetBtn">🔄 СБРОС</button>
+                <button class="timer-control-btn timer-stop-sound" id="timerStopSoundBtn">🔇 ОТКЛЮЧИТЬ ЗВУК</button>
+            </div>
+            <div class="timer-info" id="timerInfo">⏳ Введите минуты и нажмите PLAY</div>
+        </div>
+
+        <div class="result-card" id="resultBlock">
+            <div class="stat-item">
+                <span class="stat-label">👤 МОИ ЧАСЫ (сегодня)</span>
+                <span class="stat-number" id="myMinutesDetail">0 ч</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">🔄 ЧАСЫ ЗАМЕНЫ (сегодня)</span>
+                <span class="stat-number" id="partnerMinutesDetail">0 ч</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">📆 ОБЩЕЕ ВРЕМЯ</span>
+                <span class="stat-number" id="totalVal">0 ч</span>
+            </div>
+            <div id="dayDiffInfo"></div>
+
+            <div class="month-stats">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                    <span style="font-weight: 600;">🌙 МЕСЯЦ</span>
+                    <span id="monthName"
+                        style="font-size: 0.7rem; background: #eae6f2; padding: 4px 12px; border-radius: 30px;"></span>
+                </div>
+                <div class="stat-item" style="border-bottom: none; margin-top: 12px;">
+                    <span>🧑‍💻 Я (месяц)</span>
+                    <span class="stat-number" id="monthMyTotal">0 ч</span>
+                </div>
+                <div class="stat-item" style="border-bottom: none;">
+                    <span>🔄 Замена (месяц)</span>
+                    <span class="stat-number" id="monthPartnerTotal">0 ч</span>
+                </div>
+                <div id="monthBalanceBlock" class="diff-badge zero">⚖️ Загрузка...</div>
+            </div>
+            <div id="detailMsg" class="footnote"></div>
+        </div>
     </div>
 
-    <div class="date-section">
-        <div class="date-buttons">
-            <button class="btn" id="prevDayBtn">◀ Вчера</button>
-            <button class="btn" id="nextDayBtn">Завтра ▶</button>
-            <button class="btn btn-primary" id="todayBtn">Сегодня</button>
-        </div>
-        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-            <input type="date" id="datePicker" class="date-picker">
-            <span id="currentDateBadge" class="date-badge">сегодня</span>
-        </div>
-    </div>
+    <script>
+        // ========== ОСНОВНАЯ ЛОГИКА 30/30 ==========
+        const EPOCH_START = new Date(2025, 0, 1, 0, 0, 0).getTime();
+        const CYCLE_MS = 30 * 60 * 1000;
 
-    <div id="segmentsContainer" class="segments-list"></div>
-
-    <div class="action-buttons">
-        <button id="addSegmentBtn" class="action-btn">+ Добавить мой отрезок</button>
-        <button id="calcBtn" class="action-btn" style="background: linear-gradient(105deg, #2a5580, #8a3a78);">📊 ТОЧНЫЙ РАСЧЁТ</button>
-    </div>
-
-    <div class="result-card" id="resultBlock">
-        <div class="stat-item">
-            <span class="stat-label">👤 МОИ ЧАСЫ (сегодня)</span>
-            <span class="stat-number" id="myMinutesDetail">0 ч</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">🔄 ЧАСЫ ЗАМЕНЫ (сегодня)</span>
-            <span class="stat-number" id="partnerMinutesDetail">0 ч</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">📆 ОБЩЕЕ ВРЕМЯ</span>
-            <span class="stat-number" id="totalVal">0 ч</span>
-        </div>
-        <div id="dayDiffInfo"></div>
-
-        <div class="month-stats">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                <span style="font-weight: 600;">🌙 МЕСЯЦ</span>
-                <span id="monthName" style="font-size: 0.7rem; background: #eae6f2; padding: 4px 12px; border-radius: 30px;"></span>
-            </div>
-            <div class="stat-item" style="border-bottom: none; margin-top: 12px;">
-                <span>🧑‍💻 Я (месяц)</span>
-                <span class="stat-number" id="monthMyTotal">0 ч</span>
-            </div>
-            <div class="stat-item" style="border-bottom: none;">
-                <span>🔄 Замена (месяц)</span>
-                <span class="stat-number" id="monthPartnerTotal">0 ч</span>
-            </div>
-            <div id="monthBalanceBlock" class="diff-badge zero">⚖️ Загрузка...</div>
-        </div>
-        <div id="detailMsg" class="footnote"></div>
-    </div>
-</div>
-
-<script>
-    // ========== 30/30 ТОЧНАЯ ЛОГИКА ==========
-    const EPOCH_START = new Date(2025, 0, 1, 0, 0, 0).getTime();
-    const CYCLE_MS = 30 * 60 * 1000;
-    
-    function isMainWorking(timestamp) {
-        let diff = timestamp - EPOCH_START;
-        if (diff < 0) {
-            let cycles = Math.ceil(-diff / CYCLE_MS);
-            diff += cycles * CYCLE_MS;
-        }
-        let cycleIndex = Math.floor(diff / CYCLE_MS);
-        return (cycleIndex % 2 === 0);
-    }
-    
-    function getPartnerMinutes(startMs, endMs) {
-        if (startMs >= endMs) return 0;
-        let partner = 0;
-        let cur = startMs;
-        while (cur < endMs) {
-            let mainNow = isMainWorking(cur);
-            let diffEpoch = cur - EPOCH_START;
-            let cycles = Math.floor(diffEpoch / CYCLE_MS);
-            let slotEnd = EPOCH_START + (cycles + 1) * CYCLE_MS;
-            let segEnd = Math.min(endMs, slotEnd);
-            if (!mainNow) partner += (segEnd - cur);
-            cur = segEnd;
-        }
-        return partner / 60000;
-    }
-    
-    function formatTime(minutes) {
-        let hrs = Math.floor(minutes / 60);
-        let mins = Math.round(minutes % 60);
-        if (mins === 60) { hrs++; mins = 0; }
-        if (mins === 0) return `${hrs} ч`;
-        return `${hrs} ч ${mins} мин`;
-    }
-    
-    function formatTotalFromHours(hours) {
-        let minsTotal = hours * 60;
-        let hrs = Math.floor(minsTotal / 60);
-        let mins = Math.round(minsTotal % 60);
-        if (mins === 60) { hrs++; mins = 0; }
-        if (mins === 0) return `${hrs} ч`;
-        return `${hrs} ч ${mins} мин`;
-    }
-    
-    // ========== LOCALSTORAGE ==========
-    const STORAGE_KEY = "WorkSwap_IndependentDays_v9";
-    
-    function getStorageMap() {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        try { return raw ? JSON.parse(raw) : {}; } catch(e) { return {}; }
-    }
-    
-    function saveDaySegments(dateKey, segments) {
-        const map = getStorageMap();
-        // Сохраняем только непустые отрезки
-        const filtered = segments.filter(s => s.start.trim() !== "" || s.end.trim() !== "");
-        if (filtered.length === 0) {
-            // Если нет отрезков — удаляем ключ из хранилища
-            delete map[dateKey];
-        } else {
-            map[dateKey] = filtered;
-        }
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
-    }
-    
-    function loadDaySegments(dateKey) {
-        const map = getStorageMap();
-        return map[dateKey] ? [...map[dateKey]] : null;
-    }
-    
-    // Проверка, есть ли вообще какие-то данные в хранилище
-    function isStorageEmpty() {
-        const map = getStorageMap();
-        return Object.keys(map).length === 0;
-    }
-    
-    // ========== ДАТА, ПАРСИНГ ==========
-    let currentDisplayDate = new Date();
-    
-    function formatDateKey(date) {
-        let y = date.getFullYear();
-        let m = String(date.getMonth() + 1).padStart(2,'0');
-        let d = String(date.getDate()).padStart(2,'0');
-        return `${y}-${m}-${d}`;
-    }
-    
-    function updateDateUI() {
-        const key = formatDateKey(currentDisplayDate);
-        const picker = document.getElementById('datePicker');
-        if (picker) picker.value = key;
-        const badge = document.getElementById('currentDateBadge');
-        const todayKey = formatDateKey(new Date());
-        if (badge) badge.innerHTML = key === todayKey ? "🔹 СЕГОДНЯ" : key;
-        const monthSpan = document.getElementById('monthName');
-        if (monthSpan) monthSpan.innerHTML = currentDisplayDate.toLocaleString('ru', { month: 'long', year: 'numeric' });
-    }
-    
-    function parseTimeToMinutes(timeStr) {
-        if (!timeStr || !timeStr.trim()) return null;
-        let cleaned = timeStr.trim();
-        let hours = null, minutes = null;
-        let spaceParts = cleaned.split(/\s+/);
-        if (spaceParts.length >= 2) {
-            hours = parseInt(spaceParts[0],10);
-            minutes = parseInt(spaceParts[1],10);
-        } else {
-            let colonParts = cleaned.split(':');
-            if (colonParts.length >=2) {
-                hours = parseInt(colonParts[0],10);
-                minutes = parseInt(colonParts[1],10);
+        function isMainWorking(timestamp) {
+            let diff = timestamp - EPOCH_START;
+            if (diff < 0) {
+                let cycles = Math.ceil(-diff / CYCLE_MS);
+                diff += cycles * CYCLE_MS;
             }
+            let cycleIndex = Math.floor(diff / CYCLE_MS);
+            return (cycleIndex % 2 === 0);
         }
-        if (isNaN(hours) || isNaN(minutes)) return null;
-        if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) return null;
-        return { hours, minutes };
-    }
-    
-    function getMySegmentsForDate(dateObj) {
-        const rows = document.querySelectorAll('.segment-card');
-        const targetDate = new Date(dateObj);
-        targetDate.setHours(0,0,0,0);
-        let segments = [];
-        for (let row of rows) {
-            const startInp = row.querySelector('.start-input');
-            const endInp = row.querySelector('.end-input');
-            if (!startInp || !endInp) continue;
-            let startStr = startInp.value.trim();
-            let endStr = endInp.value.trim();
-            if (startStr === "" || endStr === "") continue;
-            let startTime = parseTimeToMinutes(startStr);
-            let endTime = parseTimeToMinutes(endStr);
-            if (!startTime || !endTime) continue;
-            let startDate = new Date(targetDate);
-            startDate.setHours(startTime.hours, startTime.minutes,0,0);
-            let endDate = new Date(targetDate);
-            endDate.setHours(endTime.hours, endTime.minutes,0,0);
-            let startMs = startDate.getTime();
-            let endMs = endDate.getTime();
-            if (endMs <= startMs) endMs += 24*3600000;
-            if (endMs > startMs) segments.push({ startMs, endMs });
-        }
-        return segments;
-    }
-    
-    function computeDayStats(segmentsTimestamps) {
-        if (segmentsTimestamps.length === 0) return null;
-        let myTotalMin = 0;
-        for (let seg of segmentsTimestamps) myTotalMin += (seg.endMs - seg.startMs) / 60000;
-        let globalStart = Math.min(...segmentsTimestamps.map(s => s.startMs));
-        let globalEnd = Math.max(...segmentsTimestamps.map(s => s.endMs));
-        let isMainAtEnd = isMainWorking(globalEnd);
-        let extendedEnd = globalEnd;
-        if (!isMainAtEnd) {
-            let diff = globalEnd - EPOCH_START;
-            let cycles = Math.floor(diff / CYCLE_MS);
-            let nextSlot = EPOCH_START + (cycles + 1) * CYCLE_MS;
-            extendedEnd = nextSlot;
-        }
-        let partnerMin = getPartnerMinutes(globalStart, extendedEnd);
-        return { myTotalMin, partnerMin };
-    }
-    
-    function createSegmentRow(startVal, endVal, onChangeCallback) {
-        const div = document.createElement('div');
-        div.className = 'segment-card';
-        div.innerHTML = `
-            <div class="time-pair">
-                <span class="time-label">🟢 НАЧАЛО</span>
-                <input type="text" placeholder="02 00" class="start-input time-input" value="${escapeHtml(startVal)}">
-            </div>
-            <div class="time-pair">
-                <span class="time-label">🔴 КОНЕЦ</span>
-                <input type="text" placeholder="02 30" class="end-input time-input" value="${escapeHtml(endVal)}">
-            </div>
-            <button class="remove-btn">✖ Удалить</button>
-        `;
-        const startInp = div.querySelector('.start-input');
-        const endInp = div.querySelector('.end-input');
-        const rmBtn = div.querySelector('.remove-btn');
-        const handler = () => { if(onChangeCallback) onChangeCallback(); };
-        startInp.addEventListener('input', handler);
-        endInp.addEventListener('input', handler);
-        rmBtn.addEventListener('click', () => { div.remove(); handler(); });
-        return div;
-    }
-    
-    function escapeHtml(str) {
-        return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':'&gt;');
-    }
-    
-    function saveCurrentDay() {
-        const rows = document.querySelectorAll('.segment-card');
-        let data = [];
-        for(let row of rows) {
-            const startInp = row.querySelector('.start-input');
-            const endInp = row.querySelector('.end-input');
-            if(startInp && endInp) {
-                let s = startInp.value.trim(), e = endInp.value.trim();
-                if(s || e) data.push({ start: s, end: e });
+
+        function getPartnerMinutes(startMs, endMs) {
+            if (startMs >= endMs) return 0;
+            let partner = 0;
+            let cur = startMs;
+            while (cur < endMs) {
+                let mainNow = isMainWorking(cur);
+                let diffEpoch = cur - EPOCH_START;
+                let cycles = Math.floor(diffEpoch / CYCLE_MS);
+                let slotEnd = EPOCH_START + (cycles + 1) * CYCLE_MS;
+                let segEnd = Math.min(endMs, slotEnd);
+                if (!mainNow) partner += (segEnd - cur);
+                cur = segEnd;
             }
+            return partner / 60000;
         }
-        const key = formatDateKey(currentDisplayDate);
-        saveDaySegments(key, data);
-    }
-    
-    function recalcAll() {
-        const segments = getMySegmentsForDate(currentDisplayDate);
-        if(segments.length === 0){
-            document.getElementById('myMinutesDetail').innerHTML = "0 ч";
-            document.getElementById('partnerMinutesDetail').innerHTML = "0 ч";
-            document.getElementById('totalVal').innerHTML = "0 ч";
-            document.getElementById('dayDiffInfo').innerHTML = '<div style="margin-top:10px; font-size:0.7rem;">⚡ Нет отрезков за этот день. Нажмите "+ Добавить"</div>';
-        } else {
-            const stats = computeDayStats(segments);
-            let myToday = stats.myTotalMin, partnerToday = stats.partnerMin;
-            document.getElementById('myMinutesDetail').innerHTML = formatTime(myToday);
-            document.getElementById('partnerMinutesDetail').innerHTML = formatTime(partnerToday);
-            let totalHours = (myToday + partnerToday) / 60;
-            document.getElementById('totalVal').innerHTML = formatTotalFromHours(totalHours);
-            let diff = myToday - partnerToday;
-            let diffText = diff > 0 ? `📊 Разница дня: +${formatTime(Math.abs(diff))} (я больше)` : (diff < 0 ? `📊 Разница дня: -${formatTime(Math.abs(diff))} (замена больше)` : `📊 Разница дня: 0 (ровно)`);
-            document.getElementById('dayDiffInfo').innerHTML = `<div style="margin-top:12px; background:#f0edf5; padding:8px 12px; border-radius:40px; text-align:center; font-size:0.75rem;">${diffText}</div>`;
+
+        function formatTime(minutes) {
+            let hrs = Math.floor(minutes / 60);
+            let mins = Math.round(minutes % 60);
+            if (mins === 60) { hrs++; mins = 0; }
+            if (mins === 0) return `${hrs} ч`;
+            return `${hrs} ч ${mins} мин`;
         }
-        document.getElementById('detailMsg').innerHTML = `🎯 отрезков: ${segments.length} | график 30/30`;
-        
-        // МЕСЯЦ
-        const year = currentDisplayDate.getFullYear();
-        const month = currentDisplayDate.getMonth();
-        const allMap = getStorageMap();
-        let totalMyMonth = 0, totalPartnerMonth = 0;
-        for(let [dateKey, segs] of Object.entries(allMap)){
-            const d = new Date(dateKey+"T12:00:00");
-            if(d.getFullYear() === year && d.getMonth() === month && segs.length){
-                let daySegments = [];
-                const baseDate = new Date(d); baseDate.setHours(0,0,0,0);
-                for(let seg of segs){
-                    let st = parseTimeToMinutes(seg.start);
-                    let en = parseTimeToMinutes(seg.end);
-                    if(!st || !en) continue;
-                    let startD = new Date(baseDate); startD.setHours(st.hours, st.minutes,0,0);
-                    let endD = new Date(baseDate); endD.setHours(en.hours, en.minutes,0,0);
-                    let startMs = startD.getTime();
-                    let endMs = endD.getTime();
-                    if(endMs <= startMs) endMs += 86400000;
-                    if(endMs > startMs) daySegments.push({ startMs, endMs });
-                }
-                if(daySegments.length){
-                    let myDayMin = 0;
-                    for(let ds of daySegments) myDayMin += (ds.endMs - ds.startMs)/60000;
-                    let globalStartDay = Math.min(...daySegments.map(s=>s.startMs));
-                    let globalEndDay = Math.max(...daySegments.map(s=>s.endMs));
-                    let isMainEnd = isMainWorking(globalEndDay);
-                    let extEnd = globalEndDay;
-                    if (!isMainEnd) {
-                        let diffE = globalEndDay - EPOCH_START;
-                        let cycles = Math.floor(diffE / CYCLE_MS);
-                        let nextS = EPOCH_START + (cycles + 1) * CYCLE_MS;
-                        extEnd = nextS;
-                    }
-                    let partnerDay = getPartnerMinutes(globalStartDay, extEnd);
-                    totalMyMonth += myDayMin;
-                    totalPartnerMonth += partnerDay;
-                }
-            }
+
+        function formatTotalFromHours(hours) {
+            let minsTotal = hours * 60;
+            let hrs = Math.floor(minsTotal / 60);
+            let mins = Math.round(minsTotal % 60);
+            if (mins === 60) { hrs++; mins = 0; }
+            if (mins === 0) return `${hrs} ч`;
+            return `${hrs} ч ${mins} мин`;
         }
-        document.getElementById('monthMyTotal').innerHTML = `${(totalMyMonth/60).toFixed(1)} ч (${formatTime(totalMyMonth)})`;
-        document.getElementById('monthPartnerTotal').innerHTML = `${(totalPartnerMonth/60).toFixed(1)} ч (${formatTime(totalPartnerMonth)})`;
-        let monthDiff = totalMyMonth - totalPartnerMonth;
-        let monthBlock = document.getElementById('monthBalanceBlock');
-        if(totalMyMonth === 0 && totalPartnerMonth === 0){
-            monthBlock.innerHTML = `📭 Нет данных за месяц. Добавьте отрезки в любые дни.`;
-            monthBlock.className = "diff-badge zero";
-        } else {
-            let signClass = monthDiff > 0 ? 'positive' : (monthDiff < 0 ? 'negative' : 'zero');
-            monthBlock.className = `diff-badge ${signClass}`;
-            let msg = '';
-            if(monthDiff > 0) msg = `🔥 ПЕРЕРАБОТКА: вы работали БОЛЬШЕ на ${formatTime(monthDiff)} (${(monthDiff/60).toFixed(1)} ч)`;
-            else if(monthDiff < 0) msg = `⚠️ ЗАМЕНА ПЕРЕРАБОТАЛА: на ${formatTime(-monthDiff)} (${(-monthDiff/60).toFixed(1)} ч) больше`;
-            else msg = `🤝 ИДЕАЛЬНО: вы отработали одинаково (${formatTime(totalMyMonth)} каждый)`;
-            monthBlock.innerHTML = `⚖️ ${msg}`;
+
+        // Хранилище
+        const STORAGE_KEY = "WorkSwap_FinalTimer_v1";
+        const TIMER_STORAGE_KEY = "WorkSwap_TimerState_v3";
+
+        function getStorageMap() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            try { return raw ? JSON.parse(raw) : {}; } catch (e) { return {}; }
         }
-    }
-    
-    // Показывает пустой список (без демо)
-    function showEmptyState() {
-        const container = document.getElementById('segmentsContainer');
-        container.innerHTML = '';
-        const emptyDiv = document.createElement('div');
-        emptyDiv.className = 'empty-message';
-        emptyDiv.innerHTML = '📭 Нет отрезков за этот день<br>Нажмите «+ Добавить мой отрезок»';
-        container.appendChild(emptyDiv);
-    }
-    
-    function refreshUIForDate() {
-        const key = formatDateKey(currentDisplayDate);
-        const saved = loadDaySegments(key);
-        const container = document.getElementById('segmentsContainer');
-        container.innerHTML = '';
-        
-        if (saved && saved.length > 0) {
-            for(let seg of saved){
-                const row = createSegmentRow(seg.start || "", seg.end || "", () => { saveCurrentDay(); recalcAll(); });
-                container.appendChild(row);
-            }
-        } else {
-            // Пустой день — никаких демо-данных
-            showEmptyState();
+        function saveDaySegments(dateKey, segments) {
+            const map = getStorageMap();
+            const filtered = segments.filter(s => s.start.trim() !== "" || s.end.trim() !== "");
+            if (filtered.length === 0) delete map[dateKey];
+            else map[dateKey] = filtered;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
         }
-        recalcAll();
-    }
-    
-    // Инициализация при первом запуске: если хранилище пустое — создаём демо-данные для СЕГОДНЯ
-    function initFirstLaunch() {
-        if (isStorageEmpty()) {
+        function loadDaySegments(dateKey) {
+            const map = getStorageMap();
+            return map[dateKey] ? [...map[dateKey]] : null;
+        }
+        function isStorageEmpty() { return Object.keys(getStorageMap()).length === 0; }
+
+        let currentDisplayDate = new Date();
+        function formatDateKey(date) {
+            let y = date.getFullYear();
+            let m = String(date.getMonth() + 1).padStart(2, '0');
+            let d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+        function updateDateUI() {
+            const key = formatDateKey(currentDisplayDate);
+            const picker = document.getElementById('datePicker');
+            if (picker) picker.value = key;
+            const badge = document.getElementById('currentDateBadge');
             const todayKey = formatDateKey(new Date());
-            const demoSegments = [
-                { start: "02 00", end: "02 30" }, { start: "03 00", end: "03 30" },
-                { start: "04 00", end: "04 30" }, { start: "05 00", end: "05 30" },
-                { start: "06 00", end: "06 30" }, { start: "07 00", end: "07 30" },
-                { start: "08 00", end: "08 30" }, { start: "09 00", end: "09 30" }
-            ];
-            saveDaySegments(todayKey, demoSegments);
+            if (badge) badge.innerHTML = key === todayKey ? "🔹 СЕГОДНЯ" : key;
+            const monthSpan = document.getElementById('monthName');
+            if (monthSpan) monthSpan.innerHTML = currentDisplayDate.toLocaleString('ru', { month: 'long', year: 'numeric' });
         }
-    }
-    
-    function addSegment() {
-        const container = document.getElementById('segmentsContainer');
-        // Удаляем пустое сообщение если есть
-        const emptyMsg = container.querySelector('.empty-message');
-        if (emptyMsg) emptyMsg.remove();
-        
-        const newRow = createSegmentRow("", "", () => { saveCurrentDay(); recalcAll(); });
-        container.appendChild(newRow);
-        saveCurrentDay();
-        recalcAll();
-    }
-    
-    function changeDay(delta){
-        let nd = new Date(currentDisplayDate);
-        nd.setDate(nd.getDate() + delta);
-        currentDisplayDate = nd;
-        updateDateUI();
-        refreshUIForDate();
-    }
-    
-    function setToday(){
-        currentDisplayDate = new Date();
-        updateDateUI();
-        refreshUIForDate();
-    }
-    
-    function onPickerChange(e){
-        if(e.target.value){
-            currentDisplayDate = new Date(e.target.value+"T12:00:00");
+
+        function parseTimeToMinutes(timeStr) {
+            if (!timeStr || !timeStr.trim()) return null;
+            let cleaned = timeStr.trim();
+            let hours = null, minutes = null;
+            let spaceParts = cleaned.split(/\s+/);
+            if (spaceParts.length >= 2) {
+                hours = parseInt(spaceParts[0], 10);
+                minutes = parseInt(spaceParts[1], 10);
+            } else {
+                let colonParts = cleaned.split(':');
+                if (colonParts.length >= 2) {
+                    hours = parseInt(colonParts[0], 10);
+                    minutes = parseInt(colonParts[1], 10);
+                }
+            }
+            if (isNaN(hours) || isNaN(minutes)) return null;
+            if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) return null;
+            return { hours, minutes };
+        }
+
+        function getMySegmentsForDate(dateObj) {
+            const rows = document.querySelectorAll('.segment-card');
+            const targetDate = new Date(dateObj);
+            targetDate.setHours(0, 0, 0, 0);
+            let segments = [];
+            for (let row of rows) {
+                const startInp = row.querySelector('.start-input');
+                const endInp = row.querySelector('.end-input');
+                if (!startInp || !endInp) continue;
+                let startStr = startInp.value.trim();
+                let endStr = endInp.value.trim();
+                if (startStr === "" || endStr === "") continue;
+                let startTime = parseTimeToMinutes(startStr);
+                let endTime = parseTimeToMinutes(endStr);
+                if (!startTime || !endTime) continue;
+                let startDate = new Date(targetDate);
+                startDate.setHours(startTime.hours, startTime.minutes, 0, 0);
+                let endDate = new Date(targetDate);
+                endDate.setHours(endTime.hours, endTime.minutes, 0, 0);
+                let startMs = startDate.getTime();
+                let endMs = endDate.getTime();
+                if (endMs <= startMs) endMs += 24 * 3600000;
+                if (endMs > startMs) segments.push({ startMs, endMs });
+            }
+            return segments;
+        }
+
+        function computeDayStats(segmentsTimestamps) {
+            if (segmentsTimestamps.length === 0) return null;
+            let myTotalMin = 0;
+            for (let seg of segmentsTimestamps) myTotalMin += (seg.endMs - seg.startMs) / 60000;
+            let globalStart = Math.min(...segmentsTimestamps.map(s => s.startMs));
+            let globalEnd = Math.max(...segmentsTimestamps.map(s => s.endMs));
+            let isMainAtEnd = isMainWorking(globalEnd);
+            let extendedEnd = globalEnd;
+            if (!isMainAtEnd) {
+                let diff = globalEnd - EPOCH_START;
+                let cycles = Math.floor(diff / CYCLE_MS);
+                let nextSlot = EPOCH_START + (cycles + 1) * CYCLE_MS;
+                extendedEnd = nextSlot;
+            }
+            let partnerMin = getPartnerMinutes(globalStart, extendedEnd);
+            return { myTotalMin, partnerMin };
+        }
+
+        // ========== ТАЙМЕР С ПОСТОЯННЫМ ЗВУКОМ ==========
+        let timerInterval = null;
+        let timerEndTime = null;
+        let isTimerRunning = false;
+        let currentTimerMinutes = 23;
+        let alarmInterval = null;
+        let audioContext = null;
+        let isAlarmPlaying = false;
+
+        function playContinuousSound() {
+            if (isAlarmPlaying) return;
+            isAlarmPlaying = true;
+
+            function beep() {
+                try {
+                    const audio = new Audio();
+                    audio.src = "alarm.mp3";
+                    audio.volume = 1.0;  // Громкость (0.0 - 1.0)
+                    audio.play().catch(e => console.log("audio error", e));
+                } catch (e) { console.warn("audio error", e); }
+            }
+
+            beep();
+            alarmInterval = setInterval(() => {
+                if (isAlarmPlaying) {
+                    beep();
+                }
+            }, 15000);  // Интервал повтора в миллисекундах (2000 = 2 секунды)
+
+            const timerSection = document.getElementById('timerSection');
+            timerSection.classList.add('alarm-active');
+        }
+        function stopContinuousSound() {
+            if (alarmInterval) {
+                clearInterval(alarmInterval);
+                alarmInterval = null;
+            }
+            isAlarmPlaying = false;
+            const timerSection = document.getElementById('timerSection');
+            timerSection.classList.remove('alarm-active');
+            if (audioContext) {
+                try {
+                    audioContext.close();
+                    audioContext = null;
+                } catch (e) { }
+            }
+        }
+
+        function formatTimerDisplay(remainingSeconds) {
+            if (remainingSeconds === null || remainingSeconds < 0) return "00 : 00";
+            const mins = Math.floor(remainingSeconds / 60);
+            const secs = remainingSeconds % 60;
+            return `${mins.toString().padStart(2, '0')} : ${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimerUI() {
+            const display = document.getElementById('timerDisplay');
+            const info = document.getElementById('timerInfo');
+
+            if (!timerEndTime || !isTimerRunning) {
+                if (timerEndTime && !isTimerRunning && timerEndTime > Date.now()) {
+                    const remaining = Math.max(0, Math.floor((timerEndTime - Date.now()) / 1000));
+                    if (display) display.textContent = formatTimerDisplay(remaining);
+                    if (info) info.textContent = `⏸ На паузе. Осталось: ${formatTimerDisplay(remaining)}`;
+                } else {
+                    const mins = currentTimerMinutes;
+                    if (display) display.textContent = formatTimerDisplay(mins * 60);
+                    if (info) info.textContent = `⏳ Введите минуты и нажмите PLAY (по умолчанию ${mins} мин)`;
+                }
+                return;
+            }
+
+            const now = Date.now();
+            const remainingMs = timerEndTime - now;
+
+            if (remainingMs <= 0) {
+                stopTimer();
+                if (display) display.textContent = "00 : 00";
+                if (info) {
+                    info.innerHTML = "🔔 ВРЕМЯ ВЫШЛО! 🔔<br>Нажмите «ОТКЛЮЧИТЬ ЗВУК», чтобы остановить сигнал";
+                    info.style.animation = "pulse 0.5s infinite";
+                }
+                playContinuousSound();
+                timerEndTime = null;
+                isTimerRunning = false;
+                saveTimerState();
+                return;
+            }
+
+            const remainingSec = Math.floor(remainingMs / 1000);
+            if (display) display.textContent = formatTimerDisplay(remainingSec);
+            if (info) {
+                info.textContent = `⏱️ Таймер активен. Осталось: ${formatTimerDisplay(remainingSec)}`;
+                info.style.animation = "none";
+            }
+        }
+
+        function startTimer() {
+            stopContinuousSound();
+            const minutes = parseInt(document.getElementById('timerMinutesInput').value, 10);
+            if (isNaN(minutes) || minutes < 1) {
+                alert("Введите корректное количество минут (от 1 до 180)");
+                return;
+            }
+
+            // ВСЕГДА начинаем с НОВОГО значения из поля ввода
+            currentTimerMinutes = minutes;
+            timerEndTime = Date.now() + currentTimerMinutes * 60 * 1000;
+
+            if (timerInterval) clearInterval(timerInterval);
+            isTimerRunning = true;
+            timerInterval = setInterval(() => {
+                updateTimerUI();
+            }, 1000);
+            updateTimerUI();
+            saveTimerState();
+        }
+
+        function pauseTimer() {
+            if (!timerInterval) return;
+            clearInterval(timerInterval);
+            timerInterval = null;
+            isTimerRunning = false;
+            updateTimerUI();
+            saveTimerState();
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            isTimerRunning = false;
+        }
+
+        function resetTimer() {
+            stopTimer();
+            stopContinuousSound();
+            const minutes = parseInt(document.getElementById('timerMinutesInput').value, 10);
+            if (isNaN(minutes) || minutes < 1) {
+                document.getElementById('timerMinutesInput').value = 23;
+                currentTimerMinutes = 23;
+            } else {
+                currentTimerMinutes = minutes;
+            }
+            timerEndTime = Date.now() + currentTimerMinutes * 60 * 1000;
+            isTimerRunning = false;
+            updateTimerUI();
+            saveTimerState();
+        }
+
+        function stopAlarm() {
+            stopContinuousSound();
+            const info = document.getElementById('timerInfo');
+            if (info) {
+                info.textContent = `🔇 Звук отключён. Таймер сброшен.`;
+                info.style.animation = "none";
+                setTimeout(() => {
+                    if (info && !isAlarmPlaying) {
+                        info.textContent = `⏳ Введите минуты и нажмите PLAY`;
+                    }
+                }, 2000);
+            }
+            // Сбрасываем таймер
+            timerEndTime = null;
+            isTimerRunning = false;
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = null;
+            updateTimerUI();
+            saveTimerState();
+        }
+
+        function saveTimerState() {
+            const state = {
+                timerEndTime: timerEndTime,
+                isTimerRunning: isTimerRunning,
+                currentTimerMinutes: currentTimerMinutes
+            };
+            localStorage.setItem(TIMER_STORAGE_KEY, JSON.stringify(state));
+        }
+
+        function loadTimerState() {
+            const raw = localStorage.getItem(TIMER_STORAGE_KEY);
+            if (raw) {
+                try {
+                    const state = JSON.parse(raw);
+                    if (state.timerEndTime && state.timerEndTime > Date.now()) {
+                        timerEndTime = state.timerEndTime;
+                        currentTimerMinutes = state.currentTimerMinutes || 23;
+                        document.getElementById('timerMinutesInput').value = currentTimerMinutes;
+                        if (state.isTimerRunning) {
+                            startTimer();
+                        } else {
+                            isTimerRunning = false;
+                            updateTimerUI();
+                        }
+                    } else {
+                        timerEndTime = null;
+                        currentTimerMinutes = 23;
+                        document.getElementById('timerMinutesInput').value = 23;
+                        isTimerRunning = false;
+                        updateTimerUI();
+                    }
+                } catch (e) { }
+            }
+        }
+
+        // Обновление подсветки последнего отрезка
+        function updateLastSegmentHighlight() {
+            const container = document.getElementById('segmentsContainer');
+            const allSegments = container.querySelectorAll('.segment-card');
+            allSegments.forEach((seg, idx) => {
+                if (idx === allSegments.length - 1 && allSegments.length > 0) {
+                    seg.classList.add('last-segment');
+                } else {
+                    seg.classList.remove('last-segment');
+                }
+            });
+        }
+
+        function createSegmentRow(startVal, endVal, onChangeCallback) {
+            const div = document.createElement('div');
+            div.className = 'segment-card';
+            div.innerHTML = `
+            <div class="segment-row">
+                <div class="time-pair">
+                    <span class="time-label">🟢 НАЧАЛО</span>
+                    <input type="text" placeholder="02 00" class="start-input time-input" value="${escapeHtml(startVal)}">
+                </div>
+                <div class="time-pair">
+                    <span class="time-label">🔴 КОНЕЦ</span>
+                    <input type="text" placeholder="09 43" class="end-input time-input" value="${escapeHtml(endVal)}">
+                </div>
+                <button class="remove-btn">✖ Удалить</button>
+            </div>
+        `;
+
+            const startInp = div.querySelector('.start-input');
+            const endInp = div.querySelector('.end-input');
+            const rmBtn = div.querySelector('.remove-btn');
+
+            const handler = () => {
+                if (onChangeCallback) onChangeCallback();
+                updateLastSegmentHighlight();
+            };
+
+            startInp.addEventListener('input', handler);
+            endInp.addEventListener('input', handler);
+
+            rmBtn.addEventListener('click', () => {
+                div.remove();
+                handler();
+                updateLastSegmentHighlight();
+            });
+
+            return div;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+        }
+
+        function saveCurrentDay() {
+            const rows = document.querySelectorAll('.segment-card');
+            let data = [];
+            for (let row of rows) {
+                const startInp = row.querySelector('.start-input');
+                const endInp = row.querySelector('.end-input');
+                if (startInp && endInp) {
+                    let s = startInp.value.trim(), e = endInp.value.trim();
+                    if (s || e) data.push({ start: s, end: e });
+                }
+            }
+            const key = formatDateKey(currentDisplayDate);
+            saveDaySegments(key, data);
+        }
+
+        function recalcAll() {
+            const segments = getMySegmentsForDate(currentDisplayDate);
+            if (segments.length === 0) {
+                document.getElementById('myMinutesDetail').innerHTML = "0 ч";
+                document.getElementById('partnerMinutesDetail').innerHTML = "0 ч";
+                document.getElementById('totalVal').innerHTML = "0 ч";
+                document.getElementById('dayDiffInfo').innerHTML = '<div style="margin-top:10px; font-size:0.7rem;">⚡ Нет отрезков за этот день. Нажмите "+ Добавить"</div>';
+            } else {
+                const stats = computeDayStats(segments);
+                let myToday = stats.myTotalMin, partnerToday = stats.partnerMin;
+                document.getElementById('myMinutesDetail').innerHTML = formatTime(myToday);
+                document.getElementById('partnerMinutesDetail').innerHTML = formatTime(partnerToday);
+                let totalHours = (myToday + partnerToday) / 60;
+                document.getElementById('totalVal').innerHTML = formatTotalFromHours(totalHours);
+                let diff = myToday - partnerToday;
+                let diffText = diff > 0 ? `📊 Разница дня: +${formatTime(Math.abs(diff))} (я больше)` : (diff < 0 ? `📊 Разница дня: -${formatTime(Math.abs(diff))} (замена больше)` : `📊 Разница дня: 0 (ровно)`);
+                document.getElementById('dayDiffInfo').innerHTML = `<div style="margin-top:12px; background:#f0edf5; padding:8px 12px; border-radius:40px; text-align:center; font-size:0.75rem;">${diffText}</div>`;
+            }
+            document.getElementById('detailMsg').innerHTML = `🎯 отрезков: ${segments.length} | Таймер НЕЗАВИСИМЫЙ`;
+
+            // МЕСЯЦ
+            const year = currentDisplayDate.getFullYear();
+            const month = currentDisplayDate.getMonth();
+            const allMap = getStorageMap();
+            let totalMyMonth = 0, totalPartnerMonth = 0;
+            for (let [dateKey, segs] of Object.entries(allMap)) {
+                const d = new Date(dateKey + "T12:00:00");
+                if (d.getFullYear() === year && d.getMonth() === month && segs.length) {
+                    let daySegments = [];
+                    const baseDate = new Date(d); baseDate.setHours(0, 0, 0, 0);
+                    for (let seg of segs) {
+                        let st = parseTimeToMinutes(seg.start);
+                        let en = parseTimeToMinutes(seg.end);
+                        if (!st || !en) continue;
+                        let startD = new Date(baseDate); startD.setHours(st.hours, st.minutes, 0, 0);
+                        let endD = new Date(baseDate); endD.setHours(en.hours, en.minutes, 0, 0);
+                        let startMs = startD.getTime();
+                        let endMs = endD.getTime();
+                        if (endMs <= startMs) endMs += 86400000;
+                        if (endMs > startMs) daySegments.push({ startMs, endMs });
+                    }
+                    if (daySegments.length) {
+                        let myDayMin = 0;
+                        for (let ds of daySegments) myDayMin += (ds.endMs - ds.startMs) / 60000;
+                        let globalStartDay = Math.min(...daySegments.map(s => s.startMs));
+                        let globalEndDay = Math.max(...daySegments.map(s => s.endMs));
+                        let isMainEnd = isMainWorking(globalEndDay);
+                        let extEnd = globalEndDay;
+                        if (!isMainEnd) {
+                            let diffE = globalEndDay - EPOCH_START;
+                            let cycles = Math.floor(diffE / CYCLE_MS);
+                            let nextS = EPOCH_START + (cycles + 1) * CYCLE_MS;
+                            extEnd = nextS;
+                        }
+                        let partnerDay = getPartnerMinutes(globalStartDay, extEnd);
+                        totalMyMonth += myDayMin;
+                        totalPartnerMonth += partnerDay;
+                    }
+                }
+            }
+            document.getElementById('monthMyTotal').innerHTML = `${(totalMyMonth / 60).toFixed(1)} ч (${formatTime(totalMyMonth)})`;
+            document.getElementById('monthPartnerTotal').innerHTML = `${(totalPartnerMonth / 60).toFixed(1)} ч (${formatTime(totalPartnerMonth)})`;
+            let monthDiff = totalMyMonth - totalPartnerMonth;
+            let monthBlock = document.getElementById('monthBalanceBlock');
+            if (totalMyMonth === 0 && totalPartnerMonth === 0) {
+                monthBlock.innerHTML = `📭 Нет данных за месяц. Добавьте отрезки в любые дни.`;
+                monthBlock.className = "diff-badge zero";
+            } else {
+                let signClass = monthDiff > 0 ? 'positive' : (monthDiff < 0 ? 'negative' : 'zero');
+                monthBlock.className = `diff-badge ${signClass}`;
+                let msg = '';
+                if (monthDiff > 0) msg = `🔥 ПЕРЕРАБОТКА: вы работали БОЛЬШЕ на ${formatTime(monthDiff)} (${(monthDiff / 60).toFixed(1)} ч)`;
+                else if (monthDiff < 0) msg = `⚠️ ЗАМЕНА ПЕРЕРАБОТАЛА: на ${formatTime(-monthDiff)} (${(-monthDiff / 60).toFixed(1)} ч) больше`;
+                else msg = `🤝 ИДЕАЛЬНО: вы отработали одинаково (${formatTime(totalMyMonth)} каждый)`;
+                monthBlock.innerHTML = `⚖️ ${msg}`;
+            }
+
+            updateLastSegmentHighlight();
+        }
+
+        function showEmptyState() {
+            const container = document.getElementById('segmentsContainer');
+            container.innerHTML = '';
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'empty-message';
+            emptyDiv.innerHTML = '📭 Нет отрезков за этот день<br>Нажмите «+ Добавить мой отрезок»';
+            container.appendChild(emptyDiv);
+            updateLastSegmentHighlight();
+        }
+
+        function refreshUIForDate() {
+            const key = formatDateKey(currentDisplayDate);
+            const saved = loadDaySegments(key);
+            const container = document.getElementById('segmentsContainer');
+            container.innerHTML = '';
+
+            if (saved && saved.length > 0) {
+                for (let seg of saved) {
+                    const row = createSegmentRow(seg.start || "", seg.end || "", () => { saveCurrentDay(); recalcAll(); });
+                    container.appendChild(row);
+                }
+            } else {
+                showEmptyState();
+            }
+            recalcAll();
+        }
+
+        function initFirstLaunch() {
+            if (isStorageEmpty()) {
+                const todayKey = formatDateKey(new Date());
+                const demoSegments = [
+                    { start: "02 00", end: "02 30" }, { start: "03 00", end: "03 30" },
+                    { start: "04 00", end: "04 30" }, { start: "05 00", end: "05 30" },
+                    { start: "06 00", end: "06 30" }, { start: "07 00", end: "07 30" },
+                    { start: "08 00", end: "08 30" }, { start: "09 00", end: "09 30" }
+                ];
+                saveDaySegments(todayKey, demoSegments);
+            }
+        }
+
+        function addSegment() {
+            const container = document.getElementById('segmentsContainer');
+            const emptyMsg = container.querySelector('.empty-message');
+            if (emptyMsg) emptyMsg.remove();
+            const newRow = createSegmentRow("", "", () => { saveCurrentDay(); recalcAll(); });
+            container.appendChild(newRow);
+            saveCurrentDay();
+            recalcAll();
+        }
+
+        function changeDay(delta) {
+            let nd = new Date(currentDisplayDate);
+            nd.setDate(nd.getDate() + delta);
+            currentDisplayDate = nd;
             updateDateUI();
             refreshUIForDate();
         }
-    }
-    
-    // Запуск
-    initFirstLaunch();
-    updateDateUI();
-    refreshUIForDate();
-    
-    document.getElementById('addSegmentBtn').addEventListener('click', addSegment);
-    document.getElementById('calcBtn').addEventListener('click', () => recalcAll());
-    document.getElementById('prevDayBtn').addEventListener('click', () => changeDay(-1));
-    document.getElementById('nextDayBtn').addEventListener('click', () => changeDay(1));
-    document.getElementById('todayBtn').addEventListener('click', setToday);
-    document.getElementById('datePicker').addEventListener('change', onPickerChange);
-</script>
+
+        function setToday() {
+            currentDisplayDate = new Date();
+            updateDateUI();
+            refreshUIForDate();
+        }
+
+        function onPickerChange(e) {
+            if (e.target.value) {
+                currentDisplayDate = new Date(e.target.value + "T12:00:00");
+                updateDateUI();
+                refreshUIForDate();
+            }
+        }
+
+        // Запуск
+        initFirstLaunch();
+        updateDateUI();
+        refreshUIForDate();
+        loadTimerState();
+
+        document.getElementById('addSegmentBtn').addEventListener('click', addSegment);
+        document.getElementById('calcBtn').addEventListener('click', () => recalcAll());
+        document.getElementById('prevDayBtn').addEventListener('click', () => changeDay(-1));
+        document.getElementById('nextDayBtn').addEventListener('click', () => changeDay(1));
+        document.getElementById('todayBtn').addEventListener('click', setToday);
+        document.getElementById('datePicker').addEventListener('change', onPickerChange);
+
+        // Кнопки таймера
+        document.getElementById('timerPlayBtn').addEventListener('click', startTimer);
+        document.getElementById('timerPauseBtn').addEventListener('click', pauseTimer);
+        document.getElementById('timerResetBtn').addEventListener('click', resetTimer);
+        document.getElementById('timerStopSoundBtn').addEventListener('click', stopAlarm);
+
+        // При изменении минут в поле
+        document.getElementById('timerMinutesInput').addEventListener('change', function () {
+            let val = parseInt(this.value, 10);
+            if (isNaN(val) || val < 1) val = 23;
+            if (val > 180) val = 180;
+            currentTimerMinutes = val;
+            this.value = val;
+            if (!isTimerRunning && timerEndTime) {
+                updateTimerUI();
+            }
+            saveTimerState();
+        });
+    </script>
 </body>
+
 </html>
