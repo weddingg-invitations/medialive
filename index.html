@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Учёт смен · автоматическая длительность</title>
+    <title>Учёт смен · 2 группы</title>
     <style>
         * {
             box-sizing: border-box;
@@ -169,6 +169,7 @@
             min-width: 55px;
             display: inline-block;
             border: 1px solid #d2e0f2;
+            cursor: pointer;
         }
 
         .shift-row .duration-display.auto {
@@ -203,17 +204,6 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-        }
-
-        .btn-primary {
-            background: #1a3a6b;
-            color: white;
-            box-shadow: 0 4px 12px rgba(26, 58, 107, 0.25);
-        }
-
-        .btn-primary:hover {
-            background: #0f2b51;
-            transform: scale(0.97);
         }
 
         .btn-success {
@@ -410,7 +400,6 @@
             <span class="save-indicator">💾 Данные сохраняются автоматически</span>
         </div>
 
-        <!-- ДВЕ КОЛОНКИ -->
         <div class="two-columns">
             <!-- ГРУППА A -->
             <div class="group-column" id="groupA">
@@ -418,78 +407,77 @@
                     <span>🔵 Группа 1</span>
                     <span class="badge">8 смен</span>
                 </div>
-                <!-- 8 строк -->
-                <div class="shift-row" data-group="A" data-index="0">
+                <div class="shift-row" data-group="A" data-index="0" data-shift-order="0">
                     <span class="shift-num">1</span>
                     <label>Начало</label>
                     <div class="time-input-wrapper">
                         <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="0"
                             placeholder="00:00">
                     </div>
-                    <span class="duration-display" id="durA0">30 мин</span>
+                    <span class="duration-display auto" id="durA0">30 мин</span>
                 </div>
-                <div class="shift-row" data-group="A" data-index="1">
-                    <span class="shift-num">2</span>
+                <div class="shift-row" data-group="A" data-index="1" data-shift-order="2">
+                    <span class="shift-num">3</span>
                     <label>Начало</label>
                     <div class="time-input-wrapper">
                         <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="1"
                             placeholder="00:00">
                     </div>
-                    <span class="duration-display" id="durA1">30 мин</span>
+                    <span class="duration-display auto" id="durA1">30 мин</span>
                 </div>
-                <div class="shift-row" data-group="A" data-index="2">
-                    <span class="shift-num">3</span>
+                <div class="shift-row" data-group="A" data-index="2" data-shift-order="4">
+                    <span class="shift-num">5</span>
                     <label>Начало</label>
                     <div class="time-input-wrapper">
                         <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="2"
                             placeholder="00:00">
                     </div>
-                    <span class="duration-display" id="durA2">30 мин</span>
+                    <span class="duration-display auto" id="durA2">30 мин</span>
                 </div>
-                <div class="shift-row" data-group="A" data-index="3">
-                    <span class="shift-num">4</span>
+                <div class="shift-row" data-group="A" data-index="3" data-shift-order="6">
+                    <span class="shift-num">7</span>
                     <label>Начало</label>
                     <div class="time-input-wrapper">
                         <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="3"
                             placeholder="00:00">
                     </div>
-                    <span class="duration-display" id="durA3">30 мин</span>
+                    <span class="duration-display auto" id="durA3">30 мин</span>
                 </div>
-                <div class="shift-row" data-group="A" data-index="4">
-                    <span class="shift-num">5</span>
+                <div class="shift-row" data-group="A" data-index="4" data-shift-order="8">
+                    <span class="shift-num">9</span>
                     <label>Начало</label>
                     <div class="time-input-wrapper">
                         <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="4"
                             placeholder="00:00">
                     </div>
-                    <span class="duration-display" id="durA4">30 мин</span>
+                    <span class="duration-display auto" id="durA4">30 мин</span>
                 </div>
-                <div class="shift-row" data-group="A" data-index="5">
-                    <span class="shift-num">6</span>
+                <div class="shift-row" data-group="A" data-index="5" data-shift-order="10">
+                    <span class="shift-num">11</span>
                     <label>Начало</label>
                     <div class="time-input-wrapper">
                         <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="5"
                             placeholder="00:00">
                     </div>
-                    <span class="duration-display" id="durA5">30 мин</span>
+                    <span class="duration-display auto" id="durA5">30 мин</span>
                 </div>
-                <div class="shift-row" data-group="A" data-index="6">
-                    <span class="shift-num">7</span>
+                <div class="shift-row" data-group="A" data-index="6" data-shift-order="12">
+                    <span class="shift-num">13</span>
                     <label>Начало</label>
                     <div class="time-input-wrapper">
                         <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="6"
                             placeholder="00:00">
                     </div>
-                    <span class="duration-display" id="durA6">30 мин</span>
+                    <span class="duration-display auto" id="durA6">30 мин</span>
                 </div>
-                <div class="shift-row" data-group="A" data-index="7">
-                    <span class="shift-num">8</span>
+                <div class="shift-row" data-group="A" data-index="7" data-shift-order="14">
+                    <span class="shift-num">15</span>
                     <label>Начало</label>
                     <div class="time-input-wrapper">
                         <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="7"
                             placeholder="00:00">
                     </div>
-                    <span class="duration-display" id="durA7">30 мин</span>
+                    <span class="duration-display auto" id="durA7">30 мин</span>
                 </div>
             </div>
 
@@ -499,92 +487,89 @@
                     <span>🟠 Группа 2</span>
                     <span class="badge">8 смен</span>
                 </div>
-                <!-- 8 строк -->
-                <div class="shift-row" data-group="B" data-index="0">
-                    <span class="shift-num">1</span>
+                <div class="shift-row" data-group="B" data-index="0" data-shift-order="1">
+                    <span class="shift-num">2</span>
                     <label>Начало</label>
                     <div class="time-input-wrapper">
                         <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="0"
                             placeholder="00:00">
                     </div>
-                    <span class="duration-display" id="durB0">30 мин</span>
+                    <span class="duration-display auto" id="durB0">30 мин</span>
                 </div>
-                <div class="shift-row" data-group="B" data-index="1">
-                    <span class="shift-num">2</span>
+                <div class="shift-row" data-group="B" data-index="1" data-shift-order="3">
+                    <span class="shift-num">4</span>
                     <label>Начало</label>
                     <div class="time-input-wrapper">
                         <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="1"
                             placeholder="00:00">
                     </div>
-                    <span class="duration-display" id="durB1">30 мин</span>
+                    <span class="duration-display auto" id="durB1">30 мин</span>
                 </div>
-                <div class="shift-row" data-group="B" data-index="2">
-                    <span class="shift-num">3</span>
+                <div class="shift-row" data-group="B" data-index="2" data-shift-order="5">
+                    <span class="shift-num">6</span>
                     <label>Начало</label>
                     <div class="time-input-wrapper">
                         <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="2"
                             placeholder="00:00">
                     </div>
-                    <span class="duration-display" id="durB2">30 мин</span>
+                    <span class="duration-display auto" id="durB2">30 мин</span>
                 </div>
-                <div class="shift-row" data-group="B" data-index="3">
-                    <span class="shift-num">4</span>
+                <div class="shift-row" data-group="B" data-index="3" data-shift-order="7">
+                    <span class="shift-num">8</span>
                     <label>Начало</label>
                     <div class="time-input-wrapper">
                         <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="3"
                             placeholder="00:00">
                     </div>
-                    <span class="duration-display" id="durB3">30 мин</span>
+                    <span class="duration-display auto" id="durB3">30 мин</span>
                 </div>
-                <div class="shift-row" data-group="B" data-index="4">
-                    <span class="shift-num">5</span>
+                <div class="shift-row" data-group="B" data-index="4" data-shift-order="9">
+                    <span class="shift-num">10</span>
                     <label>Начало</label>
                     <div class="time-input-wrapper">
                         <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="4"
                             placeholder="00:00">
                     </div>
-                    <span class="duration-display" id="durB4">30 мин</span>
+                    <span class="duration-display auto" id="durB4">30 мин</span>
                 </div>
-                <div class="shift-row" data-group="B" data-index="5">
-                    <span class="shift-num">6</span>
+                <div class="shift-row" data-group="B" data-index="5" data-shift-order="11">
+                    <span class="shift-num">12</span>
                     <label>Начало</label>
                     <div class="time-input-wrapper">
                         <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="5"
                             placeholder="00:00">
                     </div>
-                    <span class="duration-display" id="durB5">30 мин</span>
+                    <span class="duration-display auto" id="durB5">30 мин</span>
                 </div>
-                <div class="shift-row" data-group="B" data-index="6">
-                    <span class="shift-num">7</span>
+                <div class="shift-row" data-group="B" data-index="6" data-shift-order="13">
+                    <span class="shift-num">14</span>
                     <label>Начало</label>
                     <div class="time-input-wrapper">
                         <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="6"
                             placeholder="00:00">
                     </div>
-                    <span class="duration-display" id="durB6">30 мин</span>
+                    <span class="duration-display auto" id="durB6">30 мин</span>
                 </div>
-                <div class="shift-row" data-group="B" data-index="7">
-                    <span class="shift-num">8</span>
+                <div class="shift-row" data-group="B" data-index="7" data-shift-order="15">
+                    <span class="shift-num">16</span>
                     <label>Начало</label>
                     <div class="time-input-wrapper">
                         <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="7"
                             placeholder="00:00">
                     </div>
-                    <span class="duration-display" id="durB7">30 мин</span>
+                    <span class="duration-display auto" id="durB7">30 мин</span>
                 </div>
             </div>
         </div>
 
         <div class="action-bar">
             <button class="btn btn-success" id="fillTemplateBtn">📋 Заполнить шаблоном</button>
-            <button class="btn btn-primary" id="swapBtn">🔄 Поменять группы</button>
             <button class="btn btn-danger" id="clearStorageBtn">🗑️ Очистить всё</button>
             <span style="font-size: 0.8rem; color: #2b4b78; margin-left: auto; background: #e5edfb; padding: 4px 18px; border-radius: 60px;">
                 ⚡ 2 группы · 16 смен
             </span>
         </div>
 
-        <!-- РЕЗУЛЬТАТ -->
         <div class="result-panel" id="resultPanel">
             <div class="result-row">
                 <span class="result-label">🔵 Группа 1 · время начала смен</span>
@@ -595,11 +580,11 @@
                 <span class="result-value" id="resultB">—</span>
             </div>
             <div class="result-row">
-                <span class="result-label">⏱ Переработка Группа 1</span>
+                <span class="result-label">⏱ Переработка Группа 1 (норма 4ч)</span>
                 <span class="result-value" id="overtimeA">—</span>
             </div>
             <div class="result-row">
-                <span class="result-label">⏱ Переработка Группа 2</span>
+                <span class="result-label">⏱ Переработка Группа 2 (норма 4ч)</span>
                 <span class="result-value" id="overtimeB">—</span>
             </div>
             <div class="result-row" style="background: #d0dff5; border-radius: 60px; padding: 6px 16px; margin-top: 4px;">
@@ -616,12 +601,12 @@
                 <span class="result-value special" id="comparisonResult">⚖️</span>
             </div>
             <div class="footnote">
-                * Длительность смены = разница между текущей и следующей сменой. Для последней смены можно указать вручную (нажмите на время).
+                * Длительность смены = разница между текущей и следующей сменой (учитывается переход через полночь).<br>
+                * Нажмите на длительность чтобы установить вручную.
             </div>
         </div>
     </div>
 
-    <!-- Toast уведомление -->
     <div class="toast" id="toast"></div>
 
     <script>
@@ -638,12 +623,10 @@
             const comparisonResult = document.getElementById('comparisonResult');
             const clearStorageBtn = document.getElementById('clearStorageBtn');
             const fillTemplateBtn = document.getElementById('fillTemplateBtn');
-            const swapBtn = document.getElementById('swapBtn');
             const toast = document.getElementById('toast');
 
             const NORM_MINUTES = 240;
 
-            // ---- TOAST ----
             function showToast(msg, duration = 2000) {
                 toast.textContent = msg;
                 toast.classList.add('show');
@@ -651,7 +634,6 @@
                 toast._timer = setTimeout(() => toast.classList.remove('show'), duration);
             }
 
-            // ---- РАБОТА С localStorage ----
             function saveToStorage() {
                 const data = {};
                 timeInputs.forEach(input => {
@@ -663,7 +645,6 @@
                 });
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 
-                // Сохраняем ручные длительности (если есть)
                 const durData = {};
                 document.querySelectorAll('.duration-display').forEach(el => {
                     const id = el.id;
@@ -684,7 +665,7 @@
                             const group = input.dataset.group;
                             const idx = input.dataset.idx;
                             const key = `${group}_${idx}`;
-                            if (data[key] !== undefined) {
+                            if (data[key] !== undefined && data[key] !== '') {
                                 let val = data[key];
                                 if (val.length === 4) {
                                     input.value = val.slice(0, 2) + ':' + val.slice(2);
@@ -730,18 +711,11 @@
                 showToast('🗑️ Все данные удалены');
             }
 
-            // ---- ФУНКЦИИ ВРЕМЕНИ ----
             function timeToMinutes(timeStr) {
                 if (!timeStr || timeStr.length < 4) return 0;
                 const h = parseInt(timeStr.slice(0, 2)) || 0;
                 const m = parseInt(timeStr.slice(2, 4)) || 0;
                 return h * 60 + m;
-            }
-
-            function minutesToTime(minutes) {
-                const h = String(Math.floor(minutes / 60) % 24).padStart(2, '0');
-                const m = String(minutes % 60).padStart(2, '0');
-                return h + m;
             }
 
             function formatTotalTime(minutes) {
@@ -774,57 +748,63 @@
                 return 'normal';
             }
 
-            // ---- ВЫЧИСЛЕНИЕ ДЛИТЕЛЬНОСТЕЙ ----
             function calculateDurations() {
-                const groups = ['A', 'B'];
-                groups.forEach(group => {
-                    const inputs = document.querySelectorAll(`.time-input[data-group="${group}"]`);
-                    const times = [];
-                    inputs.forEach(input => {
+                const allShifts = [];
+                document.querySelectorAll('.shift-row').forEach(row => {
+                    const order = parseInt(row.dataset.shiftOrder);
+                    const group = row.dataset.group;
+                    const idx = row.dataset.index;
+                    const input = row.querySelector('.time-input');
+                    const durEl = document.getElementById(`dur${group}${idx}`);
+                    if (input && durEl) {
                         const val = input.value.replace(/\D/g, '');
-                        times.push(val.length === 4 ? val : null);
-                    });
+                        const time = val.length === 4 ? val : null;
+                        allShifts.push({
+                            order: order,
+                            group: group,
+                            idx: idx,
+                            input: input,
+                            durEl: durEl,
+                            time: time
+                        });
+                    }
+                });
 
-                    // Для каждой смены вычисляем длительность
-                    inputs.forEach((input, idx) => {
-                        const durEl = document.getElementById(`dur${group}${idx}`);
-                        if (!durEl) return;
+                allShifts.sort((a, b) => a.order - b.order);
 
-                        // Если есть ручное значение — не перезаписываем
-                        if (durEl.dataset.manual === 'true') return;
+                allShifts.forEach((shift, index) => {
+                    const durEl = shift.durEl;
+                    if (durEl.dataset.manual === 'true') return;
 
-                        const currentTime = times[idx];
-                        let nextTime = null;
+                    const currentTime = shift.time;
+                    let nextTime = null;
 
-                        // Ищем следующую заполненную смену
-                        for (let i = idx + 1; i < times.length; i++) {
-                            if (times[i] !== null) {
-                                nextTime = times[i];
-                                break;
-                            }
+                    for (let i = index + 1; i < allShifts.length; i++) {
+                        if (allShifts[i].time !== null) {
+                            nextTime = allShifts[i].time;
+                            break;
                         }
+                    }
 
-                        if (currentTime && nextTime) {
-                            const diff = timeToMinutes(nextTime) - timeToMinutes(currentTime);
-                            if (diff > 0) {
-                                durEl.textContent = diff + ' мин';
-                                durEl.classList.add('auto');
-                                durEl.classList.remove('manual');
-                                return;
-                            }
-                        }
-
-                        // Если это последняя смена или нет следующей — оставляем 30 мин
-                        if (!durEl.dataset.manual) {
-                            durEl.textContent = '30 мин';
+                    if (currentTime && nextTime) {
+                        let diff = timeToMinutes(nextTime) - timeToMinutes(currentTime);
+                        if (diff < 0) diff += 1440;
+                        if (diff > 0) {
+                            durEl.textContent = diff + ' мин';
                             durEl.classList.add('auto');
                             durEl.classList.remove('manual');
+                            return;
                         }
-                    });
+                    }
+
+                    if (!durEl.dataset.manual) {
+                        durEl.textContent = '30 мин';
+                        durEl.classList.add('auto');
+                        durEl.classList.remove('manual');
+                    }
                 });
             }
 
-            // ---- УМНЫЙ ШАБЛОН ----
             function fillTemplate() {
                 const inputsA = document.querySelectorAll('.time-input[data-group="A"]');
                 const inputsB = document.querySelectorAll('.time-input[data-group="B"]');
@@ -838,23 +818,29 @@
                     startMinutes = timeToMinutes(startTimeStr);
                 }
 
-                let currentA = startMinutes;
-                inputsA.forEach((input) => {
-                    const hh = String(Math.floor(currentA / 60)).padStart(2, '0');
-                    const mm = String(currentA % 60).padStart(2, '0');
+                const allTimes = [];
+                let current = startMinutes;
+                for (let i = 0; i < 16; i++) {
+                    allTimes.push(current);
+                    current += 30;
+                }
+
+                inputsA.forEach((input, idx) => {
+                    const timeIdx = idx * 2;
+                    const minutes = allTimes[timeIdx] || startMinutes + idx * 60;
+                    const hh = String(Math.floor(minutes / 60) % 24).padStart(2, '0');
+                    const mm = String(minutes % 60).padStart(2, '0');
                     input.value = hh + ':' + mm;
-                    currentA += 30;
                 });
 
-                let currentB = startMinutes + 30;
-                inputsB.forEach((input) => {
-                    const hh = String(Math.floor(currentB / 60) % 24).padStart(2, '0');
-                    const mm = String(currentB % 60).padStart(2, '0');
+                inputsB.forEach((input, idx) => {
+                    const timeIdx = idx * 2 + 1;
+                    const minutes = allTimes[timeIdx] || startMinutes + 30 + idx * 60;
+                    const hh = String(Math.floor(minutes / 60) % 24).padStart(2, '0');
+                    const mm = String(minutes % 60).padStart(2, '0');
                     input.value = hh + ':' + mm;
-                    currentB += 30;
                 });
 
-                // Сбрасываем ручные длительности
                 document.querySelectorAll('.duration-display').forEach(el => {
                     el.textContent = '30 мин';
                     el.dataset.manual = 'false';
@@ -865,37 +851,9 @@
                 saveToStorage();
                 updateFieldStyles();
                 calculate();
-                showToast('📋 Шаблон заполнен');
+                showToast('📋 Шаблон заполнен (16 смен по 30 мин)');
             }
 
-            // ---- ПОМЕНЯТЬ ГРУППЫ ----
-            function swapGroups() {
-                const inputsA = document.querySelectorAll('.time-input[data-group="A"]');
-                const inputsB = document.querySelectorAll('.time-input[data-group="B"]');
-
-                const valA = [];
-                const valB = [];
-                inputsA.forEach(input => valA.push(input.value));
-                inputsB.forEach(input => valB.push(input.value));
-
-                inputsA.forEach((input, idx) => input.value = valB[idx] || '');
-                inputsB.forEach((input, idx) => input.value = valA[idx] || '');
-
-                // Сбрасываем ручные длительности
-                document.querySelectorAll('.duration-display').forEach(el => {
-                    el.textContent = '30 мин';
-                    el.dataset.manual = 'false';
-                    el.classList.remove('manual');
-                    el.classList.add('auto');
-                });
-
-                saveToStorage();
-                updateFieldStyles();
-                calculate();
-                showToast('🔄 Группы поменяны местами');
-            }
-
-            // ---- СТИЛИ ПОЛЕЙ ----
             function updateFieldStyles() {
                 timeInputs.forEach(input => {
                     const val = input.value.replace(/\D/g, '');
@@ -906,7 +864,6 @@
                 });
             }
 
-            // ---- ОБРАБОТЧИКИ ПОЛЕЙ ----
             function handleTimeInput(e) {
                 const input = e.target;
                 let raw = input.value;
@@ -918,7 +875,6 @@
                 }
                 updateFieldStyles();
 
-                // Сбрасываем ручные длительности для этой группы
                 const group = input.dataset.group;
                 document.querySelectorAll(`.duration-display[data-group="${group}"]`).forEach(el => {
                     el.dataset.manual = 'false';
@@ -949,7 +905,6 @@
                 }
             }
 
-            // ---- КЛИК ПО ДЛИТЕЛЬНОСТИ (ручной ввод) ----
             function handleDurationClick(e) {
                 const el = e.target;
                 const current = parseInt(el.textContent) || 30;
@@ -975,9 +930,7 @@
                 el.style.cursor = 'pointer';
             });
 
-            // ---- РАСЧЁТ ----
             function calculate() {
-                // Сначала вычисляем длительности
                 calculateDurations();
 
                 let timesA = [],
@@ -996,7 +949,6 @@
                     else if (group === 'B') timesB.push(display);
                 });
 
-                // Собираем длительности
                 document.querySelectorAll('.duration-display').forEach(el => {
                     const group = el.id.replace('dur', '').replace(/\d/g, '');
                     const val = parseInt(el.textContent) || 0;
@@ -1004,37 +956,25 @@
                     else if (group === 'B') durationsB.push(val);
                 });
 
-                // Фильтруем только заполненные смены (есть время И длительность > 0)
                 const filteredA = timesA.filter((t, i) => t.length === 5 && t !== '00:00' && durationsA[i] > 0);
                 const filteredB = timesB.filter((t, i) => t.length === 5 && t !== '00:00' && durationsB[i] > 0);
 
                 resultA.textContent = filteredA.length ? filteredA.join(', ') : '—';
                 resultB.textContent = filteredB.length ? filteredB.join(', ') : '—';
 
-                // Общее время работы (сумма длительностей)
                 const totalA = durationsA.reduce((sum, val) => sum + val, 0);
                 const totalB = durationsB.reduce((sum, val) => sum + val, 0);
                 totalTimeA.textContent = totalA > 0 ? formatTotalTime(totalA) : '—';
                 totalTimeB.textContent = totalB > 0 ? formatTotalTime(totalB) : '—';
 
-                // Переработка
                 let overtimeAValue = null;
                 let overtimeBValue = null;
 
-                if (filteredA.length >= 2) {
-                    const first = timeToMinutes(filteredA[0].replace(':', ''));
-                    const last = timeToMinutes(filteredA[filteredA.length - 1].replace(':', ''));
-                    let diff = last - first;
-                    if (diff < 0) diff += 1440;
-                    overtimeAValue = diff - NORM_MINUTES;
+                if (totalA > 0) {
+                    overtimeAValue = totalA - NORM_MINUTES;
                 }
-
-                if (filteredB.length >= 2) {
-                    const first = timeToMinutes(filteredB[0].replace(':', ''));
-                    const last = timeToMinutes(filteredB[filteredB.length - 1].replace(':', ''));
-                    let diff = last - first;
-                    if (diff < 0) diff += 1440;
-                    overtimeBValue = diff - NORM_MINUTES;
+                if (totalB > 0) {
+                    overtimeBValue = totalB - NORM_MINUTES;
                 }
 
                 overtimeA.textContent = formatOvertime(overtimeAValue);
@@ -1043,11 +983,13 @@
                 overtimeB.textContent = formatOvertime(overtimeBValue);
                 overtimeB.className = 'result-value ' + getOvertimeClass(overtimeBValue);
 
-                // Сравнение
                 const countA = filteredA.length;
                 const countB = filteredB.length;
                 let compText = '';
-                if (countA > countB) {
+
+                if (countA === 0 && countB === 0) {
+                    compText = '⚖️ Нет данных для сравнения';
+                } else if (countA > countB) {
                     compText = `✅ Группа 1 заполнила больше смен (${countA} vs ${countB})`;
                 } else if (countB > countA) {
                     compText = `✅ Группа 2 заполнила больше смен (${countB} vs ${countA})`;
@@ -1060,39 +1002,39 @@
                 }
 
                 if (totalA > 0 && totalB > 0) {
+                    const diff = Math.abs(totalA - totalB);
                     if (totalA > totalB) {
-                        compText += ` · 📈 Группа 1 работала больше на ${formatTotalTime(totalA - totalB)}`;
+                        compText += ` · 📈 Группа 1 работала больше на ${formatTotalTime(diff)}`;
                     } else if (totalB > totalA) {
-                        compText += ` · 📈 Группа 2 работала больше на ${formatTotalTime(totalB - totalA)}`;
+                        compText += ` · 📈 Группа 2 работала больше на ${formatTotalTime(diff)}`;
                     } else {
-                        compText += ` · ⚖️ Общее время работы одинаковое`;
+                        compText += ` · ⚖️ Общее время работы одинаковое (${formatTotalTime(totalA)})`;
                     }
                 }
 
                 if (overtimeAValue !== null && overtimeBValue !== null) {
+                    const diff = Math.abs(overtimeAValue - overtimeBValue);
                     if (overtimeAValue > overtimeBValue) {
-                        compText += ` · 📈 Переработка 1 больше на ${formatOvertime(overtimeAValue - overtimeBValue)}`;
+                        compText += ` · 📈 Переработка 1 больше на ${formatOvertime(diff)}`;
                     } else if (overtimeBValue > overtimeAValue) {
-                        compText += ` · 📈 Переработка 2 больше на ${formatOvertime(overtimeBValue - overtimeAValue)}`;
+                        compText += ` · 📈 Переработка 2 больше на ${formatOvertime(diff)}`;
+                    } else if (diff === 0 && totalA > 0 && totalB > 0) {
+                        compText += ` · ⚖️ Переработка одинаковая (${formatOvertime(overtimeAValue)})`;
                     }
                 }
 
                 comparisonResult.textContent = compText;
             }
 
-            // ---- ИНИЦИАЛИЗАЦИЯ ----
             function init() {
                 const hasSaved = loadFromStorage();
                 updateFieldStyles();
                 calculate();
-                if (!hasSaved) {
-                    fillTemplate();
-                }
+                // Никакого автоматического заполнения!
             }
 
             clearStorageBtn.addEventListener('click', clearStorage);
             fillTemplateBtn.addEventListener('click', fillTemplate);
-            swapBtn.addEventListener('click', swapGroups);
 
             init();
         })();
