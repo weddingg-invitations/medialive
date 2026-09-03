@@ -3,1181 +3,862 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>WorkSwap | Таймер с постоянным звуком</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Учёт смен · расчёт переработки</title>
     <style>
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
-            background: #f5f7fb;
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
-            padding: 16px;
-            color: #1a1a2e;
-            min-height: 100vh;
+            background: #eef4fc;
             display: flex;
-            align-items: center;
             justify-content: center;
+            padding: 30px 16px;
+            margin: 0;
         }
 
-        .app-container {
-            max-width: 500px;
+        .container {
+            max-width: 1100px;
             width: 100%;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(0, 0, 0, 0.03);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .app-header {
-            padding: 24px 20px 16px 24px;
             background: white;
-            border-bottom: 1px solid #f0eff5;
-        }
-
-        .title-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 8px;
+            border-radius: 40px;
+            padding: 28px 30px 38px;
+            box-shadow: 0 25px 50px -12px rgba(0, 20, 40, 0.25);
         }
 
         h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #1e2b3c, #3d2a4a);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.3px;
-        }
-
-        .badge {
-            background: #f0eef8;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #4a3a6a;
+            font-weight: 650;
+            font-size: 2rem;
+            margin: 0 0 4px 0;
+            color: #0b1e3a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .sub {
-            font-size: 0.75rem;
-            color: #6c6f8c;
-            margin-top: 6px;
-            line-height: 1.35;
-        }
-
-        .date-section {
-            padding: 14px 20px;
-            background: #fafafd;
-            border-bottom: 1px solid #efedf4;
+            color: #2e4a72;
+            background: #e9f0fc;
+            padding: 8px 20px;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            font-weight: 500;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            justify-content: space-between;
             gap: 12px;
+            margin-bottom: 24px;
+            border: 1px solid #cfdef5;
         }
 
-        .date-buttons {
+        .save-indicator {
+            font-size: 0.75rem;
+            color: #2b6b3a;
+            background: #e1f3e6;
+            padding: 4px 16px;
+            border-radius: 60px;
+            border: 1px solid #b3d9c0;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px 40px;
+            margin-bottom: 28px;
+        }
+
+        .group-column {
+            background: #f8fbff;
+            border-radius: 28px;
+            padding: 20px 18px 24px;
+            border: 1px solid #e3edfc;
+        }
+
+        .group-column .group-title {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #0b1e3a;
             display: flex;
+            align-items: center;
             gap: 8px;
-            flex-wrap: wrap;
+            margin: 0 0 16px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #dae5f5;
         }
 
-        .btn {
-            padding: 8px 16px;
-            border-radius: 40px;
+        .group-column .group-title .badge {
+            font-size: 0.75rem;
+            background: #dce8fa;
+            padding: 2px 14px;
+            border-radius: 60px;
+            font-weight: 500;
+            color: #1a3b6b;
+        }
+
+        .shift-row {
+            display: grid;
+            grid-template-columns: 40px 1fr 1fr;
+            gap: 8px 10px;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid #ecf2fc;
+        }
+
+        .shift-row:last-child {
+            border-bottom: none;
+        }
+
+        .shift-row .shift-num {
             font-size: 0.75rem;
             font-weight: 600;
-            border: none;
-            background: white;
-            color: #2d3e50;
-            border: 1px solid #e2dfed;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            color: #3a5f8a;
+            text-align: center;
         }
 
-        .btn-primary {
-            background: linear-gradient(105deg, #1e5b9e, #6a2c5c);
-            color: white;
-            border: none;
-            box-shadow: 0 2px 6px rgba(106, 44, 92, 0.2);
-        }
-
-        .btn-primary:active {
-            transform: scale(0.96);
-        }
-
-        .btn:active {
-            transform: scale(0.96);
-        }
-
-        .date-picker {
-            background: white;
-            border: 1px solid #ddd9e8;
-            border-radius: 40px;
-            padding: 8px 14px;
-            font-size: 0.75rem;
-            font-family: monospace;
-            color: #1f1f2e;
-        }
-
-        .date-badge {
-            background: #e9e5f2;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 0.7rem;
+        .shift-row label {
+            font-size: 0.65rem;
             font-weight: 500;
+            color: #2b4b78;
+            letter-spacing: 0.2px;
         }
 
-        .segment-card {
-            background: #fefcff;
-            border: 1px solid #eae3f0;
-            border-radius: 28px;
-            padding: 12px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            transition: all 0.2s;
-            margin-bottom: 8px;
+        .shift-row .time-input-wrapper input {
+            width: 100px;
+            padding: 8px 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: 1px solid #d2e0f2;
+            border-radius: 60px;
+            background: white;
+            outline: none;
+            transition: 0.15s;
+            color: #0b1f3b;
+            letter-spacing: 0.5px;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
         }
 
-        .segment-card.last-segment {
-            border: 2px solid #2c5f8a;
+        .shift-row .time-input-wrapper input:focus {
+            border-color: #3a7bd5;
+            box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.15);
+        }
+
+        .shift-row .time-input-wrapper input.filled {
+            border-color: #7fb3d9;
             background: #f5faff;
         }
 
-        .segment-row {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
+        .shift-row .time-input-wrapper input[type="text"] {
+            -moz-appearance: textfield;
         }
 
-        .time-pair {
-            background: #f7f4fa;
-            border-radius: 40px;
-            padding: 5px 14px;
+        .action-bar {
             display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px 20px;
+            margin: 8px 0 20px;
+        }
+
+        .btn {
+            border: none;
+            background: #eef3fc;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1d3b62;
+            cursor: pointer;
+            transition: 0.15s;
+            border: 1px solid transparent;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
-            flex: 1;
-            min-width: 130px;
         }
 
-        .time-label {
-            font-size: 0.65rem;
-            font-weight: 600;
-            color: #6a4c7a;
-        }
-
-        .time-input {
-            background: transparent;
-            border: none;
-            font-family: 'SF Mono', 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            font-weight: 600;
-            width: 75px;
-            text-align: center;
-            outline: none;
-            color: #1e1e2a;
-            border-bottom: 1px solid #cfc6df;
-        }
-
-        .remove-btn {
-            background: #fff0f0;
-            border: none;
-            border-radius: 30px;
-            padding: 8px 18px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #bc5a5a;
-            cursor: pointer;
-            transition: 250ms;
-        }
-
-        .remove-btn:hover {
-            background: #ff0000;
+        .btn-primary {
+            background: #1a3a6b;
             color: white;
+            box-shadow: 0 4px 12px rgba(26, 58, 107, 0.25);
         }
 
-        .empty-message {
-            text-align: center;
-            padding: 32px 20px;
-            color: #9a95b0;
-            font-size: 0.85rem;
-            background: #fefcff;
-            border-radius: 28px;
-            border: 1px dashed #ddd6e8;
-        }
-
-        .action-buttons {
-            padding: 8px 20px 20px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .action-btn {
-            width: 100%;
-            padding: 14px 0;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            border: none;
-            background: linear-gradient(105deg, #1e5b9e, #6a2c5c);
-            color: white;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .action-btn:active {
+        .btn-primary:hover {
+            background: #0f2b51;
             transform: scale(0.97);
         }
 
-        /* ТАЙМЕР */
-        .timer-section {
-            margin: 0 20px 20px 20px;
-            background: linear-gradient(135deg, #1e2b3c, #2c3e4e);
-            border-radius: 32px;
-            padding: 18px;
+        .btn-success {
+            background: #2a7a4a;
             color: white;
+            border-color: #2a7a4a;
         }
 
-        .timer-title {
-            font-size: 0.75rem;
-            opacity: 0.8;
-            margin-bottom: 8px;
-            text-align: center;
+        .btn-success:hover {
+            background: #1f5f38;
+            transform: scale(0.97);
         }
 
-        .timer-time {
-            font-family: 'SF Mono', 'JetBrains Mono', monospace;
-            font-size: 2.5rem;
-            font-weight: 700;
-            text-align: center;
-            letter-spacing: 3px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 12px;
-            border-radius: 50px;
-            margin-bottom: 15px;
+        .btn-danger {
+            background: #b13e3e;
+            color: white;
+            border-color: #b13e3e;
         }
 
-        .timer-minutes-edit {
+        .btn-danger:hover {
+            background: #8f2e2e;
+            transform: scale(0.97);
+        }
+
+        .result-panel {
+            background: #e9f1fc;
+            border-radius: 32px;
+            padding: 22px 28px 28px;
+            border: 1px solid #d2e2f8;
+            margin-top: 10px;
+        }
+
+        .result-row {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .timer-minutes-input {
-            width: 80px;
-            text-align: center;
-            font-family: monospace;
-            font-weight: 700;
-            padding: 8px;
-            border-radius: 30px;
-            border: none;
-            font-size: 1.2rem;
-            background: white;
-            color: #1e2b3c;
-        }
-
-        .timer-minutes-label {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-
-        .timer-controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
             flex-wrap: wrap;
-        }
-
-        .timer-control-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            padding: 10px 24px;
-            border-radius: 40px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            min-width: 100px;
-        }
-
-        .timer-control-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.02);
-        }
-
-        .timer-control-btn:active {
-            transform: scale(0.98);
-        }
-
-        .timer-play {
-            background: #2e9b62;
-        }
-
-        .timer-pause {
-            background: #e07a4a;
-        }
-
-        .timer-reset {
-            background: #5c6bc0;
-        }
-
-        .timer-stop-sound {
-            background: #d32f2f;
-        }
-
-        .timer-info {
-            font-size: 0.65rem;
-            text-align: center;
-            margin-top: 12px;
-            opacity: 0.7;
-        }
-
-        .alarm-active {
-            animation: pulse 0.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.5;
-            }
-
-            100% {
-                opacity: 1;
-            }
-        }
-
-        .result-card {
-            margin: 12px 20px 20px 20px;
-            background: #fbfaff;
-            border-radius: 32px;
-            padding: 18px;
-            border: 1px solid #edeaf3;
-        }
-
-        .stat-item {
-            display: flex;
             justify-content: space-between;
             align-items: baseline;
-            flex-wrap: wrap;
             padding: 10px 0;
-            border-bottom: 1px solid #eceaf2;
+            border-bottom: 1px dashed #bccde4;
         }
 
-        .stat-label {
-            font-size: 0.85rem;
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
             font-weight: 500;
-            color: #3c3f5e;
+            color: #1f3b63;
+            font-size: 0.95rem;
         }
 
-        .stat-number {
-            font-family: monospace;
+        .result-value {
             font-weight: 700;
-            background: #f0edf8;
-            padding: 4px 14px;
-            border-radius: 40px;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            background: white;
+            padding: 0 18px;
+            border-radius: 60px;
+            line-height: 2.2;
+            color: #05203f;
+            max-width: 70%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        .month-stats {
-            margin-top: 18px;
-            background: #ffffff;
-            border-radius: 28px;
-            padding: 14px;
-            border: 1px solid #eae6f2;
+        .result-value.special {
+            background: #1a3a6b;
+            color: white;
+            padding: 0 24px;
         }
 
-        .diff-badge {
-            margin-top: 14px;
-            padding: 12px;
-            border-radius: 40px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 0.8rem;
+        .result-value.overtime {
+            background: #f5d742;
+            color: #1a2a3a;
         }
 
-        .positive {
-            background: #e2f3e4;
-            color: #1a6e3a;
-            border-left: 4px solid #2e9b62;
+        .result-value.undertime {
+            background: #f0a0a0;
+            color: #4a1a1a;
         }
 
-        .negative {
-            background: #ffe6e2;
-            color: #bc4e2e;
-            border-left: 4px solid #e07a4a;
-        }
-
-        .zero {
-            background: #eef2fc;
-            color: #2c5f8a;
-            border-left: 4px solid #5c9bd5;
+        .result-value.normal {
+            background: #8fcf8f;
+            color: #1a3a1a;
         }
 
         .footnote {
-            font-size: 0.65rem;
-            text-align: center;
-            margin-top: 14px;
-            color: #8a89a4;
+            font-size: 0.75rem;
+            color: #4b6382;
+            text-align: right;
+            margin-top: 16px;
+            opacity: 0.8;
         }
 
-        @media (max-width: 450px) {
-            body {
-                padding: 12px;
-            }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a3a6b;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 60px;
+            font-weight: 500;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            z-index: 1000;
+        }
 
-            .segment-row {
-                flex-direction: column;
-                align-items: stretch;
-            }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
 
-            .time-pair {
-                justify-content: space-between;
+        @media (max-width: 700px) {
+            .two-columns {
+                grid-template-columns: 1fr;
+                gap: 24px;
             }
-
-            .remove-btn {
-                text-align: center;
+            .container {
+                padding: 20px 16px;
             }
+        }
 
-            .date-section {
-                flex-direction: column;
-                align-items: stretch;
+        @media (max-width: 480px) {
+            .shift-row {
+                grid-template-columns: 32px 1fr 1fr;
+                gap: 4px 6px;
             }
-
-            .date-buttons {
-                justify-content: center;
+            .shift-row .time-input-wrapper input {
+                width: 80px;
+                padding: 6px 8px;
+                font-size: 0.85rem;
             }
-
-            .timer-time {
-                font-size: 1.8rem;
+            .result-panel {
+                padding: 16px;
             }
-
-            .timer-control-btn {
-                padding: 8px 16px;
-                min-width: 80px;
+            .action-bar {
+                gap: 10px;
+            }
+            .btn {
+                padding: 8px 14px;
+                font-size: 0.8rem;
+            }
+            .result-value {
+                max-width: 60%;
+                font-size: 0.8rem;
+                padding: 0 10px;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="app-container">
-        <div class="app-header">
-            <div class="title-row">
-                <h1>⚖️ WorkSwap</h1>
-                <span class="badge">30/30 чередование</span>
-            </div>
-            <div class="sub">📌 Таймер НЕЗАВИСИМЫЙ. При срабатывании — ПОСТОЯННЫЙ ЗВУК до отключения.</div>
+    <div class="container">
+        <h1>
+            <span>⏰ часа · 2 группы</span>
+            <span style="font-size: 1rem; background: #dce6f5; padding: 0 20px; border-radius: 60px; font-weight: 500;">4+4
+                часа</span>
+        </h1>
+        <div class="sub">
+            <span>✏️ Вводите время <strong>только цифрами</strong> (например, <strong>1800</strong> → <strong>18:30</strong>)</span>
+            <span class="save-indicator">💾 Данные сохраняются автоматически</span>
         </div>
 
-        <div class="date-section">
-            <div class="date-buttons">
-                <button class="btn" id="prevDayBtn">◀ Вчера</button>
-                <button class="btn" id="nextDayBtn">Завтра ▶</button>
-                <button class="btn btn-primary" id="todayBtn">Сегодня</button>
-            </div>
-            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                <input type="date" id="datePicker" class="date-picker">
-                <span id="currentDateBadge" class="date-badge">сегодня</span>
-            </div>
-        </div>
-
-        <div id="segmentsContainer" class="segments-list"></div>
-
-        <div class="action-buttons">
-            <button id="addSegmentBtn" class="action-btn">+ Добавить мой отрезок</button>
-            <button id="calcBtn" class="action-btn" style="background: linear-gradient(105deg, #2a5580, #8a3a78);">📊
-                ТОЧНЫЙ РАСЧЁТ</button>
-        </div>
-
-        <!-- ТАЙМЕР -->
-        <div class="timer-section" id="timerSection">
-            <div class="timer-title">⏱️ ТАЙМЕР (независимый)</div>
-            <div class="timer-time" id="timerDisplay">23 : 00</div>
-            <div class="timer-minutes-edit">
-                <input type="number" id="timerMinutesInput" class="timer-minutes-input" value="23" min="1" max="180"
-                    step="1">
-                <span class="timer-minutes-label">минут</span>
-            </div>
-            <div class="timer-controls">
-                <button class="timer-control-btn timer-play" id="timerPlayBtn">▶ PLAY</button>
-                <button class="timer-control-btn timer-pause" id="timerPauseBtn">⏸ ПАУЗА</button>
-                <button class="timer-control-btn timer-reset" id="timerResetBtn">🔄 СБРОС</button>
-                <button class="timer-control-btn timer-stop-sound" id="timerStopSoundBtn">🔇 ОТКЛЮЧИТЬ ЗВУК</button>
-            </div>
-            <div class="timer-info" id="timerInfo">⏳ Введите минуты и нажмите PLAY</div>
-        </div>
-
-        <div class="result-card" id="resultBlock">
-            <div class="stat-item">
-                <span class="stat-label">👤 МОИ ЧАСЫ (сегодня)</span>
-                <span class="stat-number" id="myMinutesDetail">0 ч</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">🔄 ЧАСЫ ЗАМЕНЫ (сегодня)</span>
-                <span class="stat-number" id="partnerMinutesDetail">0 ч</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">📆 ОБЩЕЕ ВРЕМЯ</span>
-                <span class="stat-number" id="totalVal">0 ч</span>
-            </div>
-            <div id="dayDiffInfo"></div>
-
-            <div class="month-stats">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                    <span style="font-weight: 600;">🌙 МЕСЯЦ</span>
-                    <span id="monthName"
-                        style="font-size: 0.7rem; background: #eae6f2; padding: 4px 12px; border-radius: 30px;"></span>
+        <!-- ДВЕ КОЛОНКИ -->
+        <div class="two-columns">
+            <!-- ГРУППА A -->
+            <div class="group-column" id="groupA">
+                <div class="group-title">
+                    <span>🔵 Группа 1</span>
+                    <span class="badge">8 часа</span>
                 </div>
-                <div class="stat-item" style="border-bottom: none; margin-top: 12px;">
-                    <span>🧑‍💻 Я (месяц)</span>
-                    <span class="stat-number" id="monthMyTotal">0 ч</span>
+                <!-- 8 строк -->
+                <div class="shift-row" data-group="A" data-index="0">
+                    <span class="shift-num">1</span>
+                    <label>Начало</label>
+                    <div class="time-input-wrapper">
+                        <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="0"
+                            placeholder="00:00">
+                    </div>
                 </div>
-                <div class="stat-item" style="border-bottom: none;">
-                    <span>🔄 Замена (месяц)</span>
-                    <span class="stat-number" id="monthPartnerTotal">0 ч</span>
+                <div class="shift-row" data-group="A" data-index="1">
+                    <span class="shift-num">2</span>
+                    <label>Начало</label>
+                    <div class="time-input-wrapper">
+                        <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="1"
+                            placeholder="00:00">
+                    </div>
                 </div>
-                <div id="monthBalanceBlock" class="diff-badge zero">⚖️ Загрузка...</div>
+                <div class="shift-row" data-group="A" data-index="2">
+                    <span class="shift-num">3</span>
+                    <label>Начало</label>
+                    <div class="time-input-wrapper">
+                        <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="2"
+                            placeholder="00:00">
+                    </div>
+                </div>
+                <div class="shift-row" data-group="A" data-index="3">
+                    <span class="shift-num">4</span>
+                    <label>Начало</label>
+                    <div class="time-input-wrapper">
+                        <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="3"
+                            placeholder="00:00">
+                    </div>
+                </div>
+                <div class="shift-row" data-group="A" data-index="4">
+                    <span class="shift-num">5</span>
+                    <label>Начало</label>
+                    <div class="time-input-wrapper">
+                        <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="4"
+                            placeholder="00:00">
+                    </div>
+                </div>
+                <div class="shift-row" data-group="A" data-index="5">
+                    <span class="shift-num">6</span>
+                    <label>Начало</label>
+                    <div class="time-input-wrapper">
+                        <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="5"
+                            placeholder="00:00">
+                    </div>
+                </div>
+                <div class="shift-row" data-group="A" data-index="6">
+                    <span class="shift-num">7</span>
+                    <label>Начало</label>
+                    <div class="time-input-wrapper">
+                        <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="6"
+                            placeholder="00:00">
+                    </div>
+                </div>
+                <div class="shift-row" data-group="A" data-index="7">
+                    <span class="shift-num">8</span>
+                    <label>Начало</label>
+                    <div class="time-input-wrapper">
+                        <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="7"
+                            placeholder="00:00">
+                    </div>
+                </div>
             </div>
-            <div id="detailMsg" class="footnote"></div>
+
+            <!-- ГРУППА B -->
+            <div class="group-column" id="groupB">
+                <div class="group-title">
+                    <span>🟠 Группа 2</span>
+                    <span class="badge">4 часа</span>
+                </div>
+                <!-- 8 строк -->
+                <div class="shift-row" data-group="B" data-index="0">
+                    <span class="shift-num">1</span>
+                    <label>Начало</label>
+                    <div class="time-input-wrapper">
+                        <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="0"
+                            placeholder="00:00">
+                    </div>
+                </div>
+                <div class="shift-row" data-group="B" data-index="1">
+                    <span class="shift-num">2</span>
+                    <label>Начало</label>
+                    <div class="time-input-wrapper">
+                        <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="1"
+                            placeholder="00:00">
+                    </div>
+                </div>
+                <div class="shift-row" data-group="B" data-index="2">
+                    <span class="shift-num">3</span>
+                    <label>Начало</label>
+                    <div class="time-input-wrapper">
+                        <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="2"
+                            placeholder="00:00">
+                    </div>
+                </div>
+                <div class="shift-row" data-group="B" data-index="3">
+                    <span class="shift-num">4</span>
+                    <label>Начало</label>
+                    <div class="time-input-wrapper">
+                        <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="3"
+                            placeholder="00:00">
+                    </div>
+                </div>
+                <div class="shift-row" data-group="B" data-index="4">
+                    <span class="shift-num">5</span>
+                    <label>Начало</label>
+                    <div class="time-input-wrapper">
+                        <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="4"
+                            placeholder="00:00">
+                    </div>
+                </div>
+                <div class="shift-row" data-group="B" data-index="5">
+                    <span class="shift-num">6</span>
+                    <label>Начало</label>
+                    <div class="time-input-wrapper">
+                        <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="5"
+                            placeholder="00:00">
+                    </div>
+                </div>
+                <div class="shift-row" data-group="B" data-index="6">
+                    <span class="shift-num">7</span>
+                    <label>Начало</label>
+                    <div class="time-input-wrapper">
+                        <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="6"
+                            placeholder="00:00">
+                    </div>
+                </div>
+                <div class="shift-row" data-group="B" data-index="7">
+                    <span class="shift-num">8</span>
+                    <label>Начало</label>
+                    <div class="time-input-wrapper">
+                        <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="7"
+                            placeholder="00:00">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-bar">
+            <button class="btn btn-success" id="fillTemplateBtn">📋 Заполнить шаблоном</button>
+            <button class="btn btn-primary" id="swapBtn">🔄 Поменять группы</button>
+            <button class="btn btn-danger" id="clearStorageBtn">🗑️ Очистить всё</button>
+            <span style="font-size: 0.8rem; color: #2b4b78; margin-left: auto; background: #e5edfb; padding: 4px 18px; border-radius: 60px;">
+                ⚡ 2 группы по 4 часа каждая
+            </span>
+        </div>
+
+        <!-- РЕЗУЛЬТАТ -->
+        <div class="result-panel" id="resultPanel">
+            <div class="result-row">
+                <span class="result-label">🔵 Группа 1 · время начала смен</span>
+                <span class="result-value" id="resultA">—</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">🟠 Группа 2 · время начала смен</span>
+                <span class="result-value" id="resultB">—</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">⏱ Переработка Группа 1</span>
+                <span class="result-value" id="overtimeA">—</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">⏱ Переработка Группа 2</span>
+                <span class="result-value" id="overtimeB">—</span>
+            </div>
+            <div class="result-row"
+                style="border-bottom: none; margin-top: 6px; background: #dce7f8; border-radius: 60px; padding: 6px 16px;">
+                <span class="result-label" style="font-weight: 600;">📌 Сравнение</span>
+                <span class="result-value special" id="comparisonResult">⚖️</span>
+            </div>
+            <div class="footnote">
+                * Переработка считается как разница между последней и первой сменой.
+                Норма: 4 часа по 60 минут = 240 минут (4 часа).
+            </div>
         </div>
     </div>
 
+    <!-- Toast уведомление -->
+    <div class="toast" id="toast"></div>
+
     <script>
-        // ========== ОСНОВНАЯ ЛОГИКА 30/30 ==========
-        const EPOCH_START = new Date(2025, 0, 1, 0, 0, 0).getTime();
-        const CYCLE_MS = 30 * 60 * 1000;
+        (function() {
+            const STORAGE_KEY = 'shiftTimesData';
+            const timeInputs = document.querySelectorAll('.time-input');
+            const resultA = document.getElementById('resultA');
+            const resultB = document.getElementById('resultB');
+            const overtimeA = document.getElementById('overtimeA');
+            const overtimeB = document.getElementById('overtimeB');
+            const comparisonResult = document.getElementById('comparisonResult');
+            const clearStorageBtn = document.getElementById('clearStorageBtn');
+            const fillTemplateBtn = document.getElementById('fillTemplateBtn');
+            const swapBtn = document.getElementById('swapBtn');
+            const toast = document.getElementById('toast');
 
-        function isMainWorking(timestamp) {
-            let diff = timestamp - EPOCH_START;
-            if (diff < 0) {
-                let cycles = Math.ceil(-diff / CYCLE_MS);
-                diff += cycles * CYCLE_MS;
+            const NORM_MINUTES = 240; // 8 смен по 30 минут = 240 минут (4 часа)
+
+            // ---- TOAST ----
+            function showToast(msg, duration = 2000) {
+                toast.textContent = msg;
+                toast.classList.add('show');
+                clearTimeout(toast._timer);
+                toast._timer = setTimeout(() => toast.classList.remove('show'), duration);
             }
-            let cycleIndex = Math.floor(diff / CYCLE_MS);
-            return (cycleIndex % 2 === 0);
-        }
 
-        function getPartnerMinutes(startMs, endMs) {
-            if (startMs >= endMs) return 0;
-            let partner = 0;
-            let cur = startMs;
-            while (cur < endMs) {
-                let mainNow = isMainWorking(cur);
-                let diffEpoch = cur - EPOCH_START;
-                let cycles = Math.floor(diffEpoch / CYCLE_MS);
-                let slotEnd = EPOCH_START + (cycles + 1) * CYCLE_MS;
-                let segEnd = Math.min(endMs, slotEnd);
-                if (!mainNow) partner += (segEnd - cur);
-                cur = segEnd;
+            // ---- РАБОТА С localStorage ----
+            function saveToStorage() {
+                const data = {};
+                timeInputs.forEach(input => {
+                    const group = input.dataset.group;
+                    const idx = input.dataset.idx;
+                    const key = `${group}_${idx}`;
+                    let raw = input.value.replace(/\D/g, '');
+                    data[key] = raw;
+                });
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
             }
-            return partner / 60000;
-        }
 
-        function formatTime(minutes) {
-            let hrs = Math.floor(minutes / 60);
-            let mins = Math.round(minutes % 60);
-            if (mins === 60) { hrs++; mins = 0; }
-            if (mins === 0) return `${hrs} ч`;
-            return `${hrs} ч ${mins} мин`;
-        }
-
-        function formatTotalFromHours(hours) {
-            let minsTotal = hours * 60;
-            let hrs = Math.floor(minsTotal / 60);
-            let mins = Math.round(minsTotal % 60);
-            if (mins === 60) { hrs++; mins = 0; }
-            if (mins === 0) return `${hrs} ч`;
-            return `${hrs} ч ${mins} мин`;
-        }
-
-        // Хранилище
-        const STORAGE_KEY = "WorkSwap_FinalTimer_v1";
-        const TIMER_STORAGE_KEY = "WorkSwap_TimerState_v3";
-
-        function getStorageMap() {
-            const raw = localStorage.getItem(STORAGE_KEY);
-            try { return raw ? JSON.parse(raw) : {}; } catch (e) { return {}; }
-        }
-        function saveDaySegments(dateKey, segments) {
-            const map = getStorageMap();
-            const filtered = segments.filter(s => s.start.trim() !== "" || s.end.trim() !== "");
-            if (filtered.length === 0) delete map[dateKey];
-            else map[dateKey] = filtered;
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
-        }
-        function loadDaySegments(dateKey) {
-            const map = getStorageMap();
-            return map[dateKey] ? [...map[dateKey]] : null;
-        }
-        function isStorageEmpty() { return Object.keys(getStorageMap()).length === 0; }
-
-        let currentDisplayDate = new Date();
-        function formatDateKey(date) {
-            let y = date.getFullYear();
-            let m = String(date.getMonth() + 1).padStart(2, '0');
-            let d = String(date.getDate()).padStart(2, '0');
-            return `${y}-${m}-${d}`;
-        }
-        function updateDateUI() {
-            const key = formatDateKey(currentDisplayDate);
-            const picker = document.getElementById('datePicker');
-            if (picker) picker.value = key;
-            const badge = document.getElementById('currentDateBadge');
-            const todayKey = formatDateKey(new Date());
-            if (badge) badge.innerHTML = key === todayKey ? "🔹 СЕГОДНЯ" : key;
-            const monthSpan = document.getElementById('monthName');
-            if (monthSpan) monthSpan.innerHTML = currentDisplayDate.toLocaleString('ru', { month: 'long', year: 'numeric' });
-        }
-
-        function parseTimeToMinutes(timeStr) {
-            if (!timeStr || !timeStr.trim()) return null;
-            let cleaned = timeStr.trim();
-            let hours = null, minutes = null;
-            let spaceParts = cleaned.split(/\s+/);
-            if (spaceParts.length >= 2) {
-                hours = parseInt(spaceParts[0], 10);
-                minutes = parseInt(spaceParts[1], 10);
-            } else {
-                let colonParts = cleaned.split(':');
-                if (colonParts.length >= 2) {
-                    hours = parseInt(colonParts[0], 10);
-                    minutes = parseInt(colonParts[1], 10);
-                }
-            }
-            if (isNaN(hours) || isNaN(minutes)) return null;
-            if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) return null;
-            return { hours, minutes };
-        }
-
-        function getMySegmentsForDate(dateObj) {
-            const rows = document.querySelectorAll('.segment-card');
-            const targetDate = new Date(dateObj);
-            targetDate.setHours(0, 0, 0, 0);
-            let segments = [];
-            for (let row of rows) {
-                const startInp = row.querySelector('.start-input');
-                const endInp = row.querySelector('.end-input');
-                if (!startInp || !endInp) continue;
-                let startStr = startInp.value.trim();
-                let endStr = endInp.value.trim();
-                if (startStr === "" || endStr === "") continue;
-                let startTime = parseTimeToMinutes(startStr);
-                let endTime = parseTimeToMinutes(endStr);
-                if (!startTime || !endTime) continue;
-                let startDate = new Date(targetDate);
-                startDate.setHours(startTime.hours, startTime.minutes, 0, 0);
-                let endDate = new Date(targetDate);
-                endDate.setHours(endTime.hours, endTime.minutes, 0, 0);
-                let startMs = startDate.getTime();
-                let endMs = endDate.getTime();
-                if (endMs <= startMs) endMs += 24 * 3600000;
-                if (endMs > startMs) segments.push({ startMs, endMs });
-            }
-            return segments;
-        }
-
-        function computeDayStats(segmentsTimestamps) {
-            if (segmentsTimestamps.length === 0) return null;
-            let myTotalMin = 0;
-            for (let seg of segmentsTimestamps) myTotalMin += (seg.endMs - seg.startMs) / 60000;
-            let globalStart = Math.min(...segmentsTimestamps.map(s => s.startMs));
-            let globalEnd = Math.max(...segmentsTimestamps.map(s => s.endMs));
-            let isMainAtEnd = isMainWorking(globalEnd);
-            let extendedEnd = globalEnd;
-            if (!isMainAtEnd) {
-                let diff = globalEnd - EPOCH_START;
-                let cycles = Math.floor(diff / CYCLE_MS);
-                let nextSlot = EPOCH_START + (cycles + 1) * CYCLE_MS;
-                extendedEnd = nextSlot;
-            }
-            let partnerMin = getPartnerMinutes(globalStart, extendedEnd);
-            return { myTotalMin, partnerMin };
-        }
-
-        // ========== ТАЙМЕР С ПОСТОЯННЫМ ЗВУКОМ ==========
-        let timerInterval = null;
-        let timerEndTime = null;
-        let isTimerRunning = false;
-        let currentTimerMinutes = 23;
-        let alarmInterval = null;
-        let audioContext = null;
-        let isAlarmPlaying = false;
-
-        function playContinuousSound() {
-            if (isAlarmPlaying) return;
-            isAlarmPlaying = true;
-
-            function beep() {
+            function loadFromStorage() {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (!stored) return false;
                 try {
-                    const audio = new Audio();
-                    audio.src = "alarm.mp3";
-                    audio.volume = 1.0;  // Громкость (0.0 - 1.0)
-                    audio.play().catch(e => console.log("audio error", e));
-                } catch (e) { console.warn("audio error", e); }
-            }
-
-            beep();
-            alarmInterval = setInterval(() => {
-                if (isAlarmPlaying) {
-                    beep();
-                }
-            }, 15000);  // Интервал повтора в миллисекундах (2000 = 2 секунды)
-
-            const timerSection = document.getElementById('timerSection');
-            timerSection.classList.add('alarm-active');
-        }
-        function stopContinuousSound() {
-            if (alarmInterval) {
-                clearInterval(alarmInterval);
-                alarmInterval = null;
-            }
-            isAlarmPlaying = false;
-            const timerSection = document.getElementById('timerSection');
-            timerSection.classList.remove('alarm-active');
-            if (audioContext) {
-                try {
-                    audioContext.close();
-                    audioContext = null;
-                } catch (e) { }
-            }
-        }
-
-        function formatTimerDisplay(remainingSeconds) {
-            if (remainingSeconds === null || remainingSeconds < 0) return "00 : 00";
-            const mins = Math.floor(remainingSeconds / 60);
-            const secs = remainingSeconds % 60;
-            return `${mins.toString().padStart(2, '0')} : ${secs.toString().padStart(2, '0')}`;
-        }
-
-        function updateTimerUI() {
-            const display = document.getElementById('timerDisplay');
-            const info = document.getElementById('timerInfo');
-
-            if (!timerEndTime || !isTimerRunning) {
-                if (timerEndTime && !isTimerRunning && timerEndTime > Date.now()) {
-                    const remaining = Math.max(0, Math.floor((timerEndTime - Date.now()) / 1000));
-                    if (display) display.textContent = formatTimerDisplay(remaining);
-                    if (info) info.textContent = `⏸ На паузе. Осталось: ${formatTimerDisplay(remaining)}`;
-                } else {
-                    const mins = currentTimerMinutes;
-                    if (display) display.textContent = formatTimerDisplay(mins * 60);
-                    if (info) info.textContent = `⏳ Введите минуты и нажмите PLAY (по умолчанию ${mins} мин)`;
-                }
-                return;
-            }
-
-            const now = Date.now();
-            const remainingMs = timerEndTime - now;
-
-            if (remainingMs <= 0) {
-                stopTimer();
-                if (display) display.textContent = "00 : 00";
-                if (info) {
-                    info.innerHTML = "🔔 ВРЕМЯ ВЫШЛО! 🔔<br>Нажмите «ОТКЛЮЧИТЬ ЗВУК», чтобы остановить сигнал";
-                    info.style.animation = "pulse 0.5s infinite";
-                }
-                playContinuousSound();
-                timerEndTime = null;
-                isTimerRunning = false;
-                saveTimerState();
-                return;
-            }
-
-            const remainingSec = Math.floor(remainingMs / 1000);
-            if (display) display.textContent = formatTimerDisplay(remainingSec);
-            if (info) {
-                info.textContent = `⏱️ Таймер активен. Осталось: ${formatTimerDisplay(remainingSec)}`;
-                info.style.animation = "none";
-            }
-        }
-
-        function startTimer() {
-            stopContinuousSound();
-            const minutes = parseInt(document.getElementById('timerMinutesInput').value, 10);
-            if (isNaN(minutes) || minutes < 1) {
-                alert("Введите корректное количество минут (от 1 до 180)");
-                return;
-            }
-
-            // ВСЕГДА начинаем с НОВОГО значения из поля ввода
-            currentTimerMinutes = minutes;
-            timerEndTime = Date.now() + currentTimerMinutes * 60 * 1000;
-
-            if (timerInterval) clearInterval(timerInterval);
-            isTimerRunning = true;
-            timerInterval = setInterval(() => {
-                updateTimerUI();
-            }, 1000);
-            updateTimerUI();
-            saveTimerState();
-        }
-
-        function pauseTimer() {
-            if (!timerInterval) return;
-            clearInterval(timerInterval);
-            timerInterval = null;
-            isTimerRunning = false;
-            updateTimerUI();
-            saveTimerState();
-        }
-
-        function stopTimer() {
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-            isTimerRunning = false;
-        }
-
-        function resetTimer() {
-            stopTimer();
-            stopContinuousSound();
-            const minutes = parseInt(document.getElementById('timerMinutesInput').value, 10);
-            if (isNaN(minutes) || minutes < 1) {
-                document.getElementById('timerMinutesInput').value = 23;
-                currentTimerMinutes = 23;
-            } else {
-                currentTimerMinutes = minutes;
-            }
-            timerEndTime = Date.now() + currentTimerMinutes * 60 * 1000;
-            isTimerRunning = false;
-            updateTimerUI();
-            saveTimerState();
-        }
-
-        function stopAlarm() {
-            stopContinuousSound();
-            const info = document.getElementById('timerInfo');
-            if (info) {
-                info.textContent = `🔇 Звук отключён. Таймер сброшен.`;
-                info.style.animation = "none";
-                setTimeout(() => {
-                    if (info && !isAlarmPlaying) {
-                        info.textContent = `⏳ Введите минуты и нажмите PLAY`;
-                    }
-                }, 2000);
-            }
-            // Сбрасываем таймер
-            timerEndTime = null;
-            isTimerRunning = false;
-            if (timerInterval) clearInterval(timerInterval);
-            timerInterval = null;
-            updateTimerUI();
-            saveTimerState();
-        }
-
-        function saveTimerState() {
-            const state = {
-                timerEndTime: timerEndTime,
-                isTimerRunning: isTimerRunning,
-                currentTimerMinutes: currentTimerMinutes
-            };
-            localStorage.setItem(TIMER_STORAGE_KEY, JSON.stringify(state));
-        }
-
-        function loadTimerState() {
-            const raw = localStorage.getItem(TIMER_STORAGE_KEY);
-            if (raw) {
-                try {
-                    const state = JSON.parse(raw);
-                    if (state.timerEndTime && state.timerEndTime > Date.now()) {
-                        timerEndTime = state.timerEndTime;
-                        currentTimerMinutes = state.currentTimerMinutes || 23;
-                        document.getElementById('timerMinutesInput').value = currentTimerMinutes;
-                        if (state.isTimerRunning) {
-                            startTimer();
-                        } else {
-                            isTimerRunning = false;
-                            updateTimerUI();
+                    const data = JSON.parse(stored);
+                    let loaded = false;
+                    timeInputs.forEach(input => {
+                        const group = input.dataset.group;
+                        const idx = input.dataset.idx;
+                        const key = `${group}_${idx}`;
+                        if (data[key] !== undefined) {
+                            let val = data[key];
+                            if (val.length === 4) {
+                                input.value = val.slice(0, 2) + ':' + val.slice(2);
+                            } else {
+                                input.value = val;
+                            }
+                            loaded = true;
                         }
+                    });
+                    return loaded;
+                } catch (e) {
+                    console.warn('Ошибка загрузки данных:', e);
+                    return false;
+                }
+            }
+
+            function clearStorage() {
+                localStorage.removeItem(STORAGE_KEY);
+                document.querySelectorAll('.time-input').forEach(input => input.value = '');
+                updateFieldStyles();
+                calculate();
+                showToast('🗑️ Все данные удалены');
+            }
+
+            // ---- УМНЫЙ ШАБЛОН ----
+            function fillTemplate() {
+                const inputsA = document.querySelectorAll('.time-input[data-group="A"]');
+                const inputsB = document.querySelectorAll('.time-input[data-group="B"]');
+
+                let startTimeStr = inputsA[0]?.value.replace(/\D/g, '') || '';
+                let startMinutes = 0;
+
+                if (!startTimeStr || startTimeStr === '0000') {
+                    startMinutes = 18 * 60;
+                } else {
+                    startMinutes = timeToMinutes(startTimeStr);
+                }
+
+                let currentA = startMinutes;
+                inputsA.forEach((input) => {
+                    const hh = String(Math.floor(currentA / 60)).padStart(2, '0');
+                    const mm = String(currentA % 60).padStart(2, '0');
+                    input.value = hh + ':' + mm;
+                    currentA += 30;
+                });
+
+                let currentB = startMinutes + 30;
+                inputsB.forEach((input) => {
+                    const hh = String(Math.floor(currentB / 60) % 24).padStart(2, '0');
+                    const mm = String(currentB % 60).padStart(2, '0');
+                    input.value = hh + ':' + mm;
+                    currentB += 30;
+                });
+
+                saveToStorage();
+                updateFieldStyles();
+                calculate();
+                showToast(`📋 Шаблон заполнен`);
+            }
+
+            // ---- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ ВРЕМЕНИ ----
+            function timeToMinutes(timeStr) {
+                const h = parseInt(timeStr.slice(0, 2)) || 0;
+                const m = parseInt(timeStr.slice(2, 4)) || 0;
+                return h * 60 + m;
+            }
+
+            function minutesToTime(minutes) {
+                const h = String(Math.floor(minutes / 60) % 24).padStart(2, '0');
+                const m = String(minutes % 60).padStart(2, '0');
+                return h + m;
+            }
+
+            // ---- ПОМЕНЯТЬ ГРУППЫ МЕСТАМИ ----
+            function swapGroups() {
+                const inputsA = document.querySelectorAll('.time-input[data-group="A"]');
+                const inputsB = document.querySelectorAll('.time-input[data-group="B"]');
+
+                const valuesA = [];
+                const valuesB = [];
+
+                inputsA.forEach(input => valuesA.push(input.value));
+                inputsB.forEach(input => valuesB.push(input.value));
+
+                inputsA.forEach((input, idx) => {
+                    input.value = valuesB[idx] || '';
+                });
+                inputsB.forEach((input, idx) => {
+                    input.value = valuesA[idx] || '';
+                });
+
+                saveToStorage();
+                updateFieldStyles();
+                calculate();
+                showToast('🔄 Группы поменяны местами');
+            }
+
+            // ---- СТИЛИ ПОЛЕЙ ----
+            function updateFieldStyles() {
+                timeInputs.forEach(input => {
+                    const val = input.value.replace(/\D/g, '');
+                    input.classList.remove('filled');
+                    if (val.length === 4) {
+                        input.classList.add('filled');
+                    }
+                });
+            }
+
+            // ---- ОБРАБОТЧИКИ ПОЛЕЙ ----
+            function handleInput(e) {
+                const input = e.target;
+                let raw = input.value;
+                let digits = raw.replace(/\D/g, '');
+                if (digits.length > 4) digits = digits.slice(0, 4);
+                input.value = digits;
+                if (digits.length === 4) {
+                    input.value = digits.slice(0, 2) + ':' + digits.slice(2);
+                }
+                updateFieldStyles();
+                saveToStorage();
+                calculate();
+            }
+
+            function handleBlur(e) {
+                const input = e.target;
+                let digits = input.value.replace(/\D/g, '');
+                if (digits.length === 4) {
+                    input.value = digits.slice(0, 2) + ':' + digits.slice(2);
+                }
+                updateFieldStyles();
+                saveToStorage();
+                calculate();
+            }
+
+            function handleFocus(e) {
+                const input = e.target;
+                const digits = input.value.replace(/\D/g, '');
+                if (digits.length === 4) {
+                    input.value = digits;
+                }
+            }
+
+            timeInputs.forEach(input => {
+                input.addEventListener('input', handleInput);
+                input.addEventListener('blur', handleBlur);
+                input.addEventListener('focus', handleFocus);
+            });
+
+            // ---- РАСЧЁТ ПЕРЕРАБОТКИ ----
+            function calcOvertime(times) {
+                // Берём только заполненные времена (формат HH:MM)
+                const validTimes = times.filter(t => t.length === 5 && t !== '00:00');
+                if (validTimes.length < 2) return null;
+
+                const first = timeToMinutes(validTimes[0].replace(':', ''));
+                const last = timeToMinutes(validTimes[validTimes.length - 1].replace(':', ''));
+
+                let diff = last - first;
+                if (diff < 0) diff += 1440;
+
+                const overtime = diff - NORM_MINUTES;
+                return overtime;
+            }
+
+            function formatOvertime(minutes) {
+                if (minutes === null) return '—';
+                const abs = Math.abs(minutes);
+                const hours = Math.floor(abs / 60);
+                const mins = abs % 60;
+                const sign = minutes > 0 ? '+' : (minutes < 0 ? '-' : '');
+                let result = '';
+                if (hours > 0) result += `${hours}ч `;
+                if (mins > 0 || hours === 0) result += `${mins}мин`;
+                if (result === '') result = '0мин';
+                return `${sign}${result}`;
+            }
+
+            function getOvertimeClass(minutes) {
+                if (minutes === null) return '';
+                if (minutes > 0) return 'overtime';
+                if (minutes < 0) return 'undertime';
+                return 'normal';
+            }
+
+            // ---- РАСЧЁТ ----
+            function calculate() {
+                let timesA = [],
+                    timesB = [];
+                timeInputs.forEach(input => {
+                    const group = input.dataset.group;
+                    let digits = input.value.replace(/\D/g, '');
+                    let display = digits;
+                    if (digits.length === 4) {
+                        display = digits.slice(0, 2) + ':' + digits.slice(2);
+                    }
+                    if (group === 'A') timesA.push(display);
+                    else if (group === 'B') timesB.push(display);
+                });
+
+                // Показываем ТОЛЬКО заполненные смены (не пустые и не 00:00)
+                const filteredA = timesA.filter(t => t.length === 5 && t !== '00:00');
+                const filteredB = timesB.filter(t => t.length === 5 && t !== '00:00');
+
+                resultA.textContent = filteredA.length ? filteredA.join(', ') : '—';
+                resultB.textContent = filteredB.length ? filteredB.join(', ') : '—';
+
+                // Переработка
+                const overtimeAValue = calcOvertime(timesA);
+                const overtimeBValue = calcOvertime(timesB);
+
+                overtimeA.textContent = formatOvertime(overtimeAValue);
+                overtimeA.className = 'result-value ' + getOvertimeClass(overtimeAValue);
+
+                overtimeB.textContent = formatOvertime(overtimeBValue);
+                overtimeB.className = 'result-value ' + getOvertimeClass(overtimeBValue);
+
+                // Сравнение
+                const countA = filteredA.length;
+                const countB = filteredB.length;
+                let compText = '';
+                if (countA > countB) {
+                    compText = `✅ Группа 1 заполнила больше часов (${countA} vs ${countB})`;
+                } else if (countB > countA) {
+                    compText = `✅ Группа 2 заполнила больше часов (${countB} vs ${countA})`;
+                } else {
+                    compText = `⚖️ Обе группы заполнили по ${countA} часов`;
+                }
+                if (filteredA.length && filteredB.length) {
+                    compText += ` · первая группа 1: ${filteredA[0]}, 2: ${filteredB[0]}`;
+                }
+
+                if (overtimeAValue !== null && overtimeBValue !== null) {
+                    if (overtimeAValue > overtimeBValue) {
+                        compText += ` · 📈 Группа 1 переработала больше на ${formatOvertime(overtimeAValue - overtimeBValue)}`;
+                    } else if (overtimeBValue > overtimeAValue) {
+                        compText += ` · 📈 Группа 2 переработала больше на ${formatOvertime(overtimeBValue - overtimeAValue)}`;
                     } else {
-                        timerEndTime = null;
-                        currentTimerMinutes = 23;
-                        document.getElementById('timerMinutesInput').value = 23;
-                        isTimerRunning = false;
-                        updateTimerUI();
-                    }
-                } catch (e) { }
-            }
-        }
-
-        // Обновление подсветки последнего отрезка
-        function updateLastSegmentHighlight() {
-            const container = document.getElementById('segmentsContainer');
-            const allSegments = container.querySelectorAll('.segment-card');
-            allSegments.forEach((seg, idx) => {
-                if (idx === allSegments.length - 1 && allSegments.length > 0) {
-                    seg.classList.add('last-segment');
-                } else {
-                    seg.classList.remove('last-segment');
-                }
-            });
-        }
-
-        function createSegmentRow(startVal, endVal, onChangeCallback) {
-            const div = document.createElement('div');
-            div.className = 'segment-card';
-            div.innerHTML = `
-            <div class="segment-row">
-                <div class="time-pair">
-                    <span class="time-label">🟢 НАЧАЛО</span>
-                    <input type="text" placeholder="02 00" class="start-input time-input" value="${escapeHtml(startVal)}">
-                </div>
-                <div class="time-pair">
-                    <span class="time-label">🔴 КОНЕЦ</span>
-                    <input type="text" placeholder="09 43" class="end-input time-input" value="${escapeHtml(endVal)}">
-                </div>
-                <button class="remove-btn">✖ Удалить</button>
-            </div>
-        `;
-
-            const startInp = div.querySelector('.start-input');
-            const endInp = div.querySelector('.end-input');
-            const rmBtn = div.querySelector('.remove-btn');
-
-            const handler = () => {
-                if (onChangeCallback) onChangeCallback();
-                updateLastSegmentHighlight();
-            };
-
-            startInp.addEventListener('input', handler);
-            endInp.addEventListener('input', handler);
-
-            rmBtn.addEventListener('click', () => {
-                div.remove();
-                handler();
-                updateLastSegmentHighlight();
-            });
-
-            return div;
-        }
-
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
-        }
-
-        function saveCurrentDay() {
-            const rows = document.querySelectorAll('.segment-card');
-            let data = [];
-            for (let row of rows) {
-                const startInp = row.querySelector('.start-input');
-                const endInp = row.querySelector('.end-input');
-                if (startInp && endInp) {
-                    let s = startInp.value.trim(), e = endInp.value.trim();
-                    if (s || e) data.push({ start: s, end: e });
-                }
-            }
-            const key = formatDateKey(currentDisplayDate);
-            saveDaySegments(key, data);
-        }
-
-        function recalcAll() {
-            const segments = getMySegmentsForDate(currentDisplayDate);
-            if (segments.length === 0) {
-                document.getElementById('myMinutesDetail').innerHTML = "0 ч";
-                document.getElementById('partnerMinutesDetail').innerHTML = "0 ч";
-                document.getElementById('totalVal').innerHTML = "0 ч";
-                document.getElementById('dayDiffInfo').innerHTML = '<div style="margin-top:10px; font-size:0.7rem;">⚡ Нет отрезков за этот день. Нажмите "+ Добавить"</div>';
-            } else {
-                const stats = computeDayStats(segments);
-                let myToday = stats.myTotalMin, partnerToday = stats.partnerMin;
-                document.getElementById('myMinutesDetail').innerHTML = formatTime(myToday);
-                document.getElementById('partnerMinutesDetail').innerHTML = formatTime(partnerToday);
-                let totalHours = (myToday + partnerToday) / 60;
-                document.getElementById('totalVal').innerHTML = formatTotalFromHours(totalHours);
-                let diff = myToday - partnerToday;
-                let diffText = diff > 0 ? `📊 Разница дня: +${formatTime(Math.abs(diff))} (я больше)` : (diff < 0 ? `📊 Разница дня: -${formatTime(Math.abs(diff))} (замена больше)` : `📊 Разница дня: 0 (ровно)`);
-                document.getElementById('dayDiffInfo').innerHTML = `<div style="margin-top:12px; background:#f0edf5; padding:8px 12px; border-radius:40px; text-align:center; font-size:0.75rem;">${diffText}</div>`;
-            }
-            document.getElementById('detailMsg').innerHTML = `🎯 отрезков: ${segments.length} | Таймер НЕЗАВИСИМЫЙ`;
-
-            // МЕСЯЦ
-            const year = currentDisplayDate.getFullYear();
-            const month = currentDisplayDate.getMonth();
-            const allMap = getStorageMap();
-            let totalMyMonth = 0, totalPartnerMonth = 0;
-            for (let [dateKey, segs] of Object.entries(allMap)) {
-                const d = new Date(dateKey + "T12:00:00");
-                if (d.getFullYear() === year && d.getMonth() === month && segs.length) {
-                    let daySegments = [];
-                    const baseDate = new Date(d); baseDate.setHours(0, 0, 0, 0);
-                    for (let seg of segs) {
-                        let st = parseTimeToMinutes(seg.start);
-                        let en = parseTimeToMinutes(seg.end);
-                        if (!st || !en) continue;
-                        let startD = new Date(baseDate); startD.setHours(st.hours, st.minutes, 0, 0);
-                        let endD = new Date(baseDate); endD.setHours(en.hours, en.minutes, 0, 0);
-                        let startMs = startD.getTime();
-                        let endMs = endD.getTime();
-                        if (endMs <= startMs) endMs += 86400000;
-                        if (endMs > startMs) daySegments.push({ startMs, endMs });
-                    }
-                    if (daySegments.length) {
-                        let myDayMin = 0;
-                        for (let ds of daySegments) myDayMin += (ds.endMs - ds.startMs) / 60000;
-                        let globalStartDay = Math.min(...daySegments.map(s => s.startMs));
-                        let globalEndDay = Math.max(...daySegments.map(s => s.endMs));
-                        let isMainEnd = isMainWorking(globalEndDay);
-                        let extEnd = globalEndDay;
-                        if (!isMainEnd) {
-                            let diffE = globalEndDay - EPOCH_START;
-                            let cycles = Math.floor(diffE / CYCLE_MS);
-                            let nextS = EPOCH_START + (cycles + 1) * CYCLE_MS;
-                            extEnd = nextS;
-                        }
-                        let partnerDay = getPartnerMinutes(globalStartDay, extEnd);
-                        totalMyMonth += myDayMin;
-                        totalPartnerMonth += partnerDay;
+                        compText += ` · ⚖️ Переработка одинаковая`;
                     }
                 }
-            }
-            document.getElementById('monthMyTotal').innerHTML = `${(totalMyMonth / 60).toFixed(1)} ч (${formatTime(totalMyMonth)})`;
-            document.getElementById('monthPartnerTotal').innerHTML = `${(totalPartnerMonth / 60).toFixed(1)} ч (${formatTime(totalPartnerMonth)})`;
-            let monthDiff = totalMyMonth - totalPartnerMonth;
-            let monthBlock = document.getElementById('monthBalanceBlock');
-            if (totalMyMonth === 0 && totalPartnerMonth === 0) {
-                monthBlock.innerHTML = `📭 Нет данных за месяц. Добавьте отрезки в любые дни.`;
-                monthBlock.className = "diff-badge zero";
-            } else {
-                let signClass = monthDiff > 0 ? 'positive' : (monthDiff < 0 ? 'negative' : 'zero');
-                monthBlock.className = `diff-badge ${signClass}`;
-                let msg = '';
-                if (monthDiff > 0) msg = `🔥 ПЕРЕРАБОТКА: вы работали БОЛЬШЕ на ${formatTime(monthDiff)} (${(monthDiff / 60).toFixed(1)} ч)`;
-                else if (monthDiff < 0) msg = `⚠️ ЗАМЕНА ПЕРЕРАБОТАЛА: на ${formatTime(-monthDiff)} (${(-monthDiff / 60).toFixed(1)} ч) больше`;
-                else msg = `🤝 ИДЕАЛЬНО: вы отработали одинаково (${formatTime(totalMyMonth)} каждый)`;
-                monthBlock.innerHTML = `⚖️ ${msg}`;
+
+                comparisonResult.textContent = compText;
             }
 
-            updateLastSegmentHighlight();
-        }
-
-        function showEmptyState() {
-            const container = document.getElementById('segmentsContainer');
-            container.innerHTML = '';
-            const emptyDiv = document.createElement('div');
-            emptyDiv.className = 'empty-message';
-            emptyDiv.innerHTML = '📭 Нет отрезков за этот день<br>Нажмите «+ Добавить мой отрезок»';
-            container.appendChild(emptyDiv);
-            updateLastSegmentHighlight();
-        }
-
-        function refreshUIForDate() {
-            const key = formatDateKey(currentDisplayDate);
-            const saved = loadDaySegments(key);
-            const container = document.getElementById('segmentsContainer');
-            container.innerHTML = '';
-
-            if (saved && saved.length > 0) {
-                for (let seg of saved) {
-                    const row = createSegmentRow(seg.start || "", seg.end || "", () => { saveCurrentDay(); recalcAll(); });
-                    container.appendChild(row);
+            // ---- ИНИЦИАЛИЗАЦИЯ ----
+            function init() {
+                const hasSaved = loadFromStorage();
+                updateFieldStyles();
+                calculate();
+                if (!hasSaved) {
+                    fillTemplate();
                 }
-            } else {
-                showEmptyState();
             }
-            recalcAll();
-        }
 
-        function initFirstLaunch() {
-            if (isStorageEmpty()) {
-                const todayKey = formatDateKey(new Date());
-                const demoSegments = [
-                    { start: "02 00", end: "02 30" }, { start: "03 00", end: "03 30" },
-                    { start: "04 00", end: "04 30" }, { start: "05 00", end: "05 30" },
-                    { start: "06 00", end: "06 30" }, { start: "07 00", end: "07 30" },
-                    { start: "08 00", end: "08 30" }, { start: "09 00", end: "09 30" }
-                ];
-                saveDaySegments(todayKey, demoSegments);
-            }
-        }
+            // ---- ОБРАБОТЧИКИ КНОПОК ----
+            clearStorageBtn.addEventListener('click', clearStorage);
+            fillTemplateBtn.addEventListener('click', fillTemplate);
+            swapBtn.addEventListener('click', swapGroups);
 
-        function addSegment() {
-            const container = document.getElementById('segmentsContainer');
-            const emptyMsg = container.querySelector('.empty-message');
-            if (emptyMsg) emptyMsg.remove();
-            const newRow = createSegmentRow("", "", () => { saveCurrentDay(); recalcAll(); });
-            container.appendChild(newRow);
-            saveCurrentDay();
-            recalcAll();
-        }
-
-        function changeDay(delta) {
-            let nd = new Date(currentDisplayDate);
-            nd.setDate(nd.getDate() + delta);
-            currentDisplayDate = nd;
-            updateDateUI();
-            refreshUIForDate();
-        }
-
-        function setToday() {
-            currentDisplayDate = new Date();
-            updateDateUI();
-            refreshUIForDate();
-        }
-
-        function onPickerChange(e) {
-            if (e.target.value) {
-                currentDisplayDate = new Date(e.target.value + "T12:00:00");
-                updateDateUI();
-                refreshUIForDate();
-            }
-        }
-
-        // Запуск
-        initFirstLaunch();
-        updateDateUI();
-        refreshUIForDate();
-        loadTimerState();
-
-        document.getElementById('addSegmentBtn').addEventListener('click', addSegment);
-        document.getElementById('calcBtn').addEventListener('click', () => recalcAll());
-        document.getElementById('prevDayBtn').addEventListener('click', () => changeDay(-1));
-        document.getElementById('nextDayBtn').addEventListener('click', () => changeDay(1));
-        document.getElementById('todayBtn').addEventListener('click', setToday);
-        document.getElementById('datePicker').addEventListener('change', onPickerChange);
-
-        // Кнопки таймера
-        document.getElementById('timerPlayBtn').addEventListener('click', startTimer);
-        document.getElementById('timerPauseBtn').addEventListener('click', pauseTimer);
-        document.getElementById('timerResetBtn').addEventListener('click', resetTimer);
-        document.getElementById('timerStopSoundBtn').addEventListener('click', stopAlarm);
-
-        // При изменении минут в поле
-        document.getElementById('timerMinutesInput').addEventListener('change', function () {
-            let val = parseInt(this.value, 10);
-            if (isNaN(val) || val < 1) val = 23;
-            if (val > 180) val = 180;
-            currentTimerMinutes = val;
-            this.value = val;
-            if (!isTimerRunning && timerEndTime) {
-                updateTimerUI();
-            }
-            saveTimerState();
-        });
+            // Запуск
+            init();
+        })();
     </script>
 </body>
 
