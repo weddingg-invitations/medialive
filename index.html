@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Учёт смен · расчёт переработки</title>
+    <title>Учёт смен · автоматическая длительность</title>
     <style>
         * {
             box-sizing: border-box;
@@ -103,7 +103,7 @@
 
         .shift-row {
             display: grid;
-            grid-template-columns: 40px 1fr 1fr;
+            grid-template-columns: 40px 1fr 1fr 1fr;
             gap: 8px 10px;
             align-items: center;
             padding: 6px 0;
@@ -122,16 +122,16 @@
         }
 
         .shift-row label {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 500;
             color: #2b4b78;
             letter-spacing: 0.2px;
         }
 
         .shift-row .time-input-wrapper input {
-            width: 100px;
-            padding: 8px 12px;
-            font-size: 0.95rem;
+            width: 80px;
+            padding: 6px 8px;
+            font-size: 0.9rem;
             font-weight: 600;
             border: 1px solid #d2e0f2;
             border-radius: 60px;
@@ -156,6 +156,29 @@
 
         .shift-row .time-input-wrapper input[type="text"] {
             -moz-appearance: textfield;
+        }
+
+        .shift-row .duration-display {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1a3a6b;
+            background: #e9f1fc;
+            padding: 4px 10px;
+            border-radius: 60px;
+            text-align: center;
+            min-width: 55px;
+            display: inline-block;
+            border: 1px solid #d2e0f2;
+        }
+
+        .shift-row .duration-display.auto {
+            background: #dff0df;
+            border-color: #8fbf8f;
+        }
+
+        .shift-row .duration-display.manual {
+            background: #f5e6b8;
+            border-color: #d4b84a;
         }
 
         .action-bar {
@@ -277,6 +300,13 @@
             color: #1a3a1a;
         }
 
+        .result-value.total-time {
+            background: #4a7aaa;
+            color: white;
+            font-size: 1.1rem;
+            padding: 0 24px;
+        }
+
         .footnote {
             font-size: 0.75rem;
             color: #4b6382;
@@ -315,32 +345,54 @@
             .container {
                 padding: 20px 16px;
             }
+            .shift-row {
+                grid-template-columns: 30px 1fr 1fr 1fr;
+                gap: 4px 6px;
+            }
+            .shift-row .time-input-wrapper input {
+                width: 60px;
+                font-size: 0.8rem;
+                padding: 4px 4px;
+            }
+            .shift-row .duration-display {
+                font-size: 0.75rem;
+                padding: 3px 6px;
+                min-width: 40px;
+            }
         }
 
         @media (max-width: 480px) {
             .shift-row {
-                grid-template-columns: 32px 1fr 1fr;
-                gap: 4px 6px;
+                grid-template-columns: 25px 1fr 1fr 1fr;
+                gap: 3px 4px;
             }
             .shift-row .time-input-wrapper input {
-                width: 80px;
-                padding: 6px 8px;
-                font-size: 0.85rem;
+                width: 50px;
+                font-size: 0.7rem;
+                padding: 3px 2px;
+            }
+            .shift-row .duration-display {
+                font-size: 0.65rem;
+                padding: 2px 4px;
+                min-width: 30px;
+            }
+            .shift-row label {
+                font-size: 0.5rem;
             }
             .result-panel {
-                padding: 16px;
+                padding: 12px;
             }
             .action-bar {
-                gap: 10px;
+                gap: 6px;
             }
             .btn {
-                padding: 8px 14px;
-                font-size: 0.8rem;
+                padding: 6px 10px;
+                font-size: 0.7rem;
             }
             .result-value {
-                max-width: 60%;
-                font-size: 0.8rem;
-                padding: 0 10px;
+                max-width: 50%;
+                font-size: 0.7rem;
+                padding: 0 8px;
             }
         }
     </style>
@@ -349,12 +401,12 @@
 <body>
     <div class="container">
         <h1>
-            <span>⏰ часа · 2 группы</span>
-            <span style="font-size: 1rem; background: #dce6f5; padding: 0 20px; border-radius: 60px; font-weight: 500;">4+4
-                часа</span>
+            <span>⏰ Смены · 2 группы</span>
+            <span style="font-size: 1rem; background: #dce6f5; padding: 0 20px; border-radius: 60px; font-weight: 500;">8+8
+                смен</span>
         </h1>
         <div class="sub">
-            <span>✏️ Вводите время <strong>только цифрами</strong> (например, <strong>1800</strong> → <strong>18:30</strong>)</span>
+            <span>✏️ Вводите время <strong>только цифрами</strong> (например, <strong>1800</strong> → <strong>18:00</strong>)</span>
             <span class="save-indicator">💾 Данные сохраняются автоматически</span>
         </div>
 
@@ -364,7 +416,7 @@
             <div class="group-column" id="groupA">
                 <div class="group-title">
                     <span>🔵 Группа 1</span>
-                    <span class="badge">8 часа</span>
+                    <span class="badge">8 смен</span>
                 </div>
                 <!-- 8 строк -->
                 <div class="shift-row" data-group="A" data-index="0">
@@ -374,6 +426,7 @@
                         <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="0"
                             placeholder="00:00">
                     </div>
+                    <span class="duration-display" id="durA0">30 мин</span>
                 </div>
                 <div class="shift-row" data-group="A" data-index="1">
                     <span class="shift-num">2</span>
@@ -382,6 +435,7 @@
                         <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="1"
                             placeholder="00:00">
                     </div>
+                    <span class="duration-display" id="durA1">30 мин</span>
                 </div>
                 <div class="shift-row" data-group="A" data-index="2">
                     <span class="shift-num">3</span>
@@ -390,6 +444,7 @@
                         <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="2"
                             placeholder="00:00">
                     </div>
+                    <span class="duration-display" id="durA2">30 мин</span>
                 </div>
                 <div class="shift-row" data-group="A" data-index="3">
                     <span class="shift-num">4</span>
@@ -398,6 +453,7 @@
                         <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="3"
                             placeholder="00:00">
                     </div>
+                    <span class="duration-display" id="durA3">30 мин</span>
                 </div>
                 <div class="shift-row" data-group="A" data-index="4">
                     <span class="shift-num">5</span>
@@ -406,6 +462,7 @@
                         <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="4"
                             placeholder="00:00">
                     </div>
+                    <span class="duration-display" id="durA4">30 мин</span>
                 </div>
                 <div class="shift-row" data-group="A" data-index="5">
                     <span class="shift-num">6</span>
@@ -414,6 +471,7 @@
                         <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="5"
                             placeholder="00:00">
                     </div>
+                    <span class="duration-display" id="durA5">30 мин</span>
                 </div>
                 <div class="shift-row" data-group="A" data-index="6">
                     <span class="shift-num">7</span>
@@ -422,6 +480,7 @@
                         <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="6"
                             placeholder="00:00">
                     </div>
+                    <span class="duration-display" id="durA6">30 мин</span>
                 </div>
                 <div class="shift-row" data-group="A" data-index="7">
                     <span class="shift-num">8</span>
@@ -430,6 +489,7 @@
                         <input type="text" class="time-input" maxlength="4" data-group="A" data-idx="7"
                             placeholder="00:00">
                     </div>
+                    <span class="duration-display" id="durA7">30 мин</span>
                 </div>
             </div>
 
@@ -437,7 +497,7 @@
             <div class="group-column" id="groupB">
                 <div class="group-title">
                     <span>🟠 Группа 2</span>
-                    <span class="badge">4 часа</span>
+                    <span class="badge">8 смен</span>
                 </div>
                 <!-- 8 строк -->
                 <div class="shift-row" data-group="B" data-index="0">
@@ -447,6 +507,7 @@
                         <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="0"
                             placeholder="00:00">
                     </div>
+                    <span class="duration-display" id="durB0">30 мин</span>
                 </div>
                 <div class="shift-row" data-group="B" data-index="1">
                     <span class="shift-num">2</span>
@@ -455,6 +516,7 @@
                         <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="1"
                             placeholder="00:00">
                     </div>
+                    <span class="duration-display" id="durB1">30 мин</span>
                 </div>
                 <div class="shift-row" data-group="B" data-index="2">
                     <span class="shift-num">3</span>
@@ -463,6 +525,7 @@
                         <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="2"
                             placeholder="00:00">
                     </div>
+                    <span class="duration-display" id="durB2">30 мин</span>
                 </div>
                 <div class="shift-row" data-group="B" data-index="3">
                     <span class="shift-num">4</span>
@@ -471,6 +534,7 @@
                         <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="3"
                             placeholder="00:00">
                     </div>
+                    <span class="duration-display" id="durB3">30 мин</span>
                 </div>
                 <div class="shift-row" data-group="B" data-index="4">
                     <span class="shift-num">5</span>
@@ -479,6 +543,7 @@
                         <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="4"
                             placeholder="00:00">
                     </div>
+                    <span class="duration-display" id="durB4">30 мин</span>
                 </div>
                 <div class="shift-row" data-group="B" data-index="5">
                     <span class="shift-num">6</span>
@@ -487,6 +552,7 @@
                         <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="5"
                             placeholder="00:00">
                     </div>
+                    <span class="duration-display" id="durB5">30 мин</span>
                 </div>
                 <div class="shift-row" data-group="B" data-index="6">
                     <span class="shift-num">7</span>
@@ -495,6 +561,7 @@
                         <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="6"
                             placeholder="00:00">
                     </div>
+                    <span class="duration-display" id="durB6">30 мин</span>
                 </div>
                 <div class="shift-row" data-group="B" data-index="7">
                     <span class="shift-num">8</span>
@@ -503,6 +570,7 @@
                         <input type="text" class="time-input" maxlength="4" data-group="B" data-idx="7"
                             placeholder="00:00">
                     </div>
+                    <span class="duration-display" id="durB7">30 мин</span>
                 </div>
             </div>
         </div>
@@ -512,7 +580,7 @@
             <button class="btn btn-primary" id="swapBtn">🔄 Поменять группы</button>
             <button class="btn btn-danger" id="clearStorageBtn">🗑️ Очистить всё</button>
             <span style="font-size: 0.8rem; color: #2b4b78; margin-left: auto; background: #e5edfb; padding: 4px 18px; border-radius: 60px;">
-                ⚡ 2 группы по 4 часа каждая
+                ⚡ 2 группы · 16 смен
             </span>
         </div>
 
@@ -534,14 +602,21 @@
                 <span class="result-label">⏱ Переработка Группа 2</span>
                 <span class="result-value" id="overtimeB">—</span>
             </div>
+            <div class="result-row" style="background: #d0dff5; border-radius: 60px; padding: 6px 16px; margin-top: 4px;">
+                <span class="result-label" style="font-weight: 700;">⏱ Общее время работы Группа 1</span>
+                <span class="result-value total-time" id="totalTimeA">—</span>
+            </div>
+            <div class="result-row" style="background: #d0dff5; border-radius: 60px; padding: 6px 16px; margin-top: 4px;">
+                <span class="result-label" style="font-weight: 700;">⏱ Общее время работы Группа 2</span>
+                <span class="result-value total-time" id="totalTimeB">—</span>
+            </div>
             <div class="result-row"
                 style="border-bottom: none; margin-top: 6px; background: #dce7f8; border-radius: 60px; padding: 6px 16px;">
                 <span class="result-label" style="font-weight: 600;">📌 Сравнение</span>
                 <span class="result-value special" id="comparisonResult">⚖️</span>
             </div>
             <div class="footnote">
-                * Переработка считается как разница между последней и первой сменой.
-                Норма: 4 часа по 60 минут = 240 минут (4 часа).
+                * Длительность смены = разница между текущей и следующей сменой. Для последней смены можно указать вручную (нажмите на время).
             </div>
         </div>
     </div>
@@ -552,18 +627,21 @@
     <script>
         (function() {
             const STORAGE_KEY = 'shiftTimesData';
+            const STORAGE_KEY_DUR = 'shiftDurationsData';
             const timeInputs = document.querySelectorAll('.time-input');
             const resultA = document.getElementById('resultA');
             const resultB = document.getElementById('resultB');
             const overtimeA = document.getElementById('overtimeA');
             const overtimeB = document.getElementById('overtimeB');
+            const totalTimeA = document.getElementById('totalTimeA');
+            const totalTimeB = document.getElementById('totalTimeB');
             const comparisonResult = document.getElementById('comparisonResult');
             const clearStorageBtn = document.getElementById('clearStorageBtn');
             const fillTemplateBtn = document.getElementById('fillTemplateBtn');
             const swapBtn = document.getElementById('swapBtn');
             const toast = document.getElementById('toast');
 
-            const NORM_MINUTES = 240; // 8 смен по 30 минут = 240 минут (4 часа)
+            const NORM_MINUTES = 240;
 
             // ---- TOAST ----
             function showToast(msg, duration = 2000) {
@@ -584,41 +662,166 @@
                     data[key] = raw;
                 });
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+                // Сохраняем ручные длительности (если есть)
+                const durData = {};
+                document.querySelectorAll('.duration-display').forEach(el => {
+                    const id = el.id;
+                    if (el.dataset.manual === 'true') {
+                        durData[id] = el.textContent.replace(' мин', '');
+                    }
+                });
+                localStorage.setItem(STORAGE_KEY_DUR, JSON.stringify(durData));
             }
 
             function loadFromStorage() {
+                let loaded = false;
                 const stored = localStorage.getItem(STORAGE_KEY);
-                if (!stored) return false;
-                try {
-                    const data = JSON.parse(stored);
-                    let loaded = false;
-                    timeInputs.forEach(input => {
-                        const group = input.dataset.group;
-                        const idx = input.dataset.idx;
-                        const key = `${group}_${idx}`;
-                        if (data[key] !== undefined) {
-                            let val = data[key];
-                            if (val.length === 4) {
-                                input.value = val.slice(0, 2) + ':' + val.slice(2);
-                            } else {
-                                input.value = val;
+                if (stored) {
+                    try {
+                        const data = JSON.parse(stored);
+                        timeInputs.forEach(input => {
+                            const group = input.dataset.group;
+                            const idx = input.dataset.idx;
+                            const key = `${group}_${idx}`;
+                            if (data[key] !== undefined) {
+                                let val = data[key];
+                                if (val.length === 4) {
+                                    input.value = val.slice(0, 2) + ':' + val.slice(2);
+                                } else {
+                                    input.value = val;
+                                }
+                                loaded = true;
                             }
-                            loaded = true;
-                        }
-                    });
-                    return loaded;
-                } catch (e) {
-                    console.warn('Ошибка загрузки данных:', e);
-                    return false;
+                        });
+                    } catch (e) { console.warn(e); }
                 }
+
+                const storedDur = localStorage.getItem(STORAGE_KEY_DUR);
+                if (storedDur) {
+                    try {
+                        const data = JSON.parse(storedDur);
+                        document.querySelectorAll('.duration-display').forEach(el => {
+                            if (data[el.id] !== undefined) {
+                                el.textContent = data[el.id] + ' мин';
+                                el.dataset.manual = 'true';
+                                el.classList.add('manual');
+                                el.classList.remove('auto');
+                                loaded = true;
+                            }
+                        });
+                    } catch (e) { console.warn(e); }
+                }
+                return loaded;
             }
 
             function clearStorage() {
                 localStorage.removeItem(STORAGE_KEY);
+                localStorage.removeItem(STORAGE_KEY_DUR);
                 document.querySelectorAll('.time-input').forEach(input => input.value = '');
+                document.querySelectorAll('.duration-display').forEach(el => {
+                    el.textContent = '30 мин';
+                    el.dataset.manual = 'false';
+                    el.classList.remove('manual');
+                    el.classList.add('auto');
+                });
                 updateFieldStyles();
                 calculate();
                 showToast('🗑️ Все данные удалены');
+            }
+
+            // ---- ФУНКЦИИ ВРЕМЕНИ ----
+            function timeToMinutes(timeStr) {
+                if (!timeStr || timeStr.length < 4) return 0;
+                const h = parseInt(timeStr.slice(0, 2)) || 0;
+                const m = parseInt(timeStr.slice(2, 4)) || 0;
+                return h * 60 + m;
+            }
+
+            function minutesToTime(minutes) {
+                const h = String(Math.floor(minutes / 60) % 24).padStart(2, '0');
+                const m = String(minutes % 60).padStart(2, '0');
+                return h + m;
+            }
+
+            function formatTotalTime(minutes) {
+                if (minutes === 0) return '0 мин';
+                const hours = Math.floor(minutes / 60);
+                const mins = minutes % 60;
+                let result = '';
+                if (hours > 0) result += `${hours} ч `;
+                if (mins > 0 || hours === 0) result += `${mins} мин`;
+                return result.trim();
+            }
+
+            function formatOvertime(minutes) {
+                if (minutes === null) return '—';
+                const abs = Math.abs(minutes);
+                const hours = Math.floor(abs / 60);
+                const mins = abs % 60;
+                const sign = minutes > 0 ? '+' : (minutes < 0 ? '-' : '');
+                let result = '';
+                if (hours > 0) result += `${hours}ч `;
+                if (mins > 0 || hours === 0) result += `${mins}мин`;
+                if (result === '') result = '0мин';
+                return `${sign}${result}`;
+            }
+
+            function getOvertimeClass(minutes) {
+                if (minutes === null) return '';
+                if (minutes > 0) return 'overtime';
+                if (minutes < 0) return 'undertime';
+                return 'normal';
+            }
+
+            // ---- ВЫЧИСЛЕНИЕ ДЛИТЕЛЬНОСТЕЙ ----
+            function calculateDurations() {
+                const groups = ['A', 'B'];
+                groups.forEach(group => {
+                    const inputs = document.querySelectorAll(`.time-input[data-group="${group}"]`);
+                    const times = [];
+                    inputs.forEach(input => {
+                        const val = input.value.replace(/\D/g, '');
+                        times.push(val.length === 4 ? val : null);
+                    });
+
+                    // Для каждой смены вычисляем длительность
+                    inputs.forEach((input, idx) => {
+                        const durEl = document.getElementById(`dur${group}${idx}`);
+                        if (!durEl) return;
+
+                        // Если есть ручное значение — не перезаписываем
+                        if (durEl.dataset.manual === 'true') return;
+
+                        const currentTime = times[idx];
+                        let nextTime = null;
+
+                        // Ищем следующую заполненную смену
+                        for (let i = idx + 1; i < times.length; i++) {
+                            if (times[i] !== null) {
+                                nextTime = times[i];
+                                break;
+                            }
+                        }
+
+                        if (currentTime && nextTime) {
+                            const diff = timeToMinutes(nextTime) - timeToMinutes(currentTime);
+                            if (diff > 0) {
+                                durEl.textContent = diff + ' мин';
+                                durEl.classList.add('auto');
+                                durEl.classList.remove('manual');
+                                return;
+                            }
+                        }
+
+                        // Если это последняя смена или нет следующей — оставляем 30 мин
+                        if (!durEl.dataset.manual) {
+                            durEl.textContent = '30 мин';
+                            durEl.classList.add('auto');
+                            durEl.classList.remove('manual');
+                        }
+                    });
+                });
             }
 
             // ---- УМНЫЙ ШАБЛОН ----
@@ -651,41 +854,39 @@
                     currentB += 30;
                 });
 
+                // Сбрасываем ручные длительности
+                document.querySelectorAll('.duration-display').forEach(el => {
+                    el.textContent = '30 мин';
+                    el.dataset.manual = 'false';
+                    el.classList.remove('manual');
+                    el.classList.add('auto');
+                });
+
                 saveToStorage();
                 updateFieldStyles();
                 calculate();
-                showToast(`📋 Шаблон заполнен`);
+                showToast('📋 Шаблон заполнен');
             }
 
-            // ---- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ ВРЕМЕНИ ----
-            function timeToMinutes(timeStr) {
-                const h = parseInt(timeStr.slice(0, 2)) || 0;
-                const m = parseInt(timeStr.slice(2, 4)) || 0;
-                return h * 60 + m;
-            }
-
-            function minutesToTime(minutes) {
-                const h = String(Math.floor(minutes / 60) % 24).padStart(2, '0');
-                const m = String(minutes % 60).padStart(2, '0');
-                return h + m;
-            }
-
-            // ---- ПОМЕНЯТЬ ГРУППЫ МЕСТАМИ ----
+            // ---- ПОМЕНЯТЬ ГРУППЫ ----
             function swapGroups() {
                 const inputsA = document.querySelectorAll('.time-input[data-group="A"]');
                 const inputsB = document.querySelectorAll('.time-input[data-group="B"]');
 
-                const valuesA = [];
-                const valuesB = [];
+                const valA = [];
+                const valB = [];
+                inputsA.forEach(input => valA.push(input.value));
+                inputsB.forEach(input => valB.push(input.value));
 
-                inputsA.forEach(input => valuesA.push(input.value));
-                inputsB.forEach(input => valuesB.push(input.value));
+                inputsA.forEach((input, idx) => input.value = valB[idx] || '');
+                inputsB.forEach((input, idx) => input.value = valA[idx] || '');
 
-                inputsA.forEach((input, idx) => {
-                    input.value = valuesB[idx] || '';
-                });
-                inputsB.forEach((input, idx) => {
-                    input.value = valuesA[idx] || '';
+                // Сбрасываем ручные длительности
+                document.querySelectorAll('.duration-display').forEach(el => {
+                    el.textContent = '30 мин';
+                    el.dataset.manual = 'false';
+                    el.classList.remove('manual');
+                    el.classList.add('auto');
                 });
 
                 saveToStorage();
@@ -706,7 +907,7 @@
             }
 
             // ---- ОБРАБОТЧИКИ ПОЛЕЙ ----
-            function handleInput(e) {
+            function handleTimeInput(e) {
                 const input = e.target;
                 let raw = input.value;
                 let digits = raw.replace(/\D/g, '');
@@ -716,11 +917,20 @@
                     input.value = digits.slice(0, 2) + ':' + digits.slice(2);
                 }
                 updateFieldStyles();
+
+                // Сбрасываем ручные длительности для этой группы
+                const group = input.dataset.group;
+                document.querySelectorAll(`.duration-display[data-group="${group}"]`).forEach(el => {
+                    el.dataset.manual = 'false';
+                    el.classList.remove('manual');
+                    el.classList.add('auto');
+                });
+
                 saveToStorage();
                 calculate();
             }
 
-            function handleBlur(e) {
+            function handleTimeBlur(e) {
                 const input = e.target;
                 let digits = input.value.replace(/\D/g, '');
                 if (digits.length === 4) {
@@ -731,7 +941,7 @@
                 calculate();
             }
 
-            function handleFocus(e) {
+            function handleTimeFocus(e) {
                 const input = e.target;
                 const digits = input.value.replace(/\D/g, '');
                 if (digits.length === 4) {
@@ -739,52 +949,42 @@
                 }
             }
 
+            // ---- КЛИК ПО ДЛИТЕЛЬНОСТИ (ручной ввод) ----
+            function handleDurationClick(e) {
+                const el = e.target;
+                const current = parseInt(el.textContent) || 30;
+                const newVal = prompt('Введите длительность смены в минутах:', current);
+                if (newVal !== null && !isNaN(newVal) && parseInt(newVal) > 0) {
+                    el.textContent = parseInt(newVal) + ' мин';
+                    el.dataset.manual = 'true';
+                    el.classList.add('manual');
+                    el.classList.remove('auto');
+                    saveToStorage();
+                    calculate();
+                }
+            }
+
             timeInputs.forEach(input => {
-                input.addEventListener('input', handleInput);
-                input.addEventListener('blur', handleBlur);
-                input.addEventListener('focus', handleFocus);
+                input.addEventListener('input', handleTimeInput);
+                input.addEventListener('blur', handleTimeBlur);
+                input.addEventListener('focus', handleTimeFocus);
             });
 
-            // ---- РАСЧЁТ ПЕРЕРАБОТКИ ----
-            function calcOvertime(times) {
-                // Берём только заполненные времена (формат HH:MM)
-                const validTimes = times.filter(t => t.length === 5 && t !== '00:00');
-                if (validTimes.length < 2) return null;
-
-                const first = timeToMinutes(validTimes[0].replace(':', ''));
-                const last = timeToMinutes(validTimes[validTimes.length - 1].replace(':', ''));
-
-                let diff = last - first;
-                if (diff < 0) diff += 1440;
-
-                const overtime = diff - NORM_MINUTES;
-                return overtime;
-            }
-
-            function formatOvertime(minutes) {
-                if (minutes === null) return '—';
-                const abs = Math.abs(minutes);
-                const hours = Math.floor(abs / 60);
-                const mins = abs % 60;
-                const sign = minutes > 0 ? '+' : (minutes < 0 ? '-' : '');
-                let result = '';
-                if (hours > 0) result += `${hours}ч `;
-                if (mins > 0 || hours === 0) result += `${mins}мин`;
-                if (result === '') result = '0мин';
-                return `${sign}${result}`;
-            }
-
-            function getOvertimeClass(minutes) {
-                if (minutes === null) return '';
-                if (minutes > 0) return 'overtime';
-                if (minutes < 0) return 'undertime';
-                return 'normal';
-            }
+            document.querySelectorAll('.duration-display').forEach(el => {
+                el.addEventListener('click', handleDurationClick);
+                el.style.cursor = 'pointer';
+            });
 
             // ---- РАСЧЁТ ----
             function calculate() {
+                // Сначала вычисляем длительности
+                calculateDurations();
+
                 let timesA = [],
                     timesB = [];
+                let durationsA = [],
+                    durationsB = [];
+
                 timeInputs.forEach(input => {
                     const group = input.dataset.group;
                     let digits = input.value.replace(/\D/g, '');
@@ -796,16 +996,46 @@
                     else if (group === 'B') timesB.push(display);
                 });
 
-                // Показываем ТОЛЬКО заполненные смены (не пустые и не 00:00)
-                const filteredA = timesA.filter(t => t.length === 5 && t !== '00:00');
-                const filteredB = timesB.filter(t => t.length === 5 && t !== '00:00');
+                // Собираем длительности
+                document.querySelectorAll('.duration-display').forEach(el => {
+                    const group = el.id.replace('dur', '').replace(/\d/g, '');
+                    const val = parseInt(el.textContent) || 0;
+                    if (group === 'A') durationsA.push(val);
+                    else if (group === 'B') durationsB.push(val);
+                });
+
+                // Фильтруем только заполненные смены (есть время И длительность > 0)
+                const filteredA = timesA.filter((t, i) => t.length === 5 && t !== '00:00' && durationsA[i] > 0);
+                const filteredB = timesB.filter((t, i) => t.length === 5 && t !== '00:00' && durationsB[i] > 0);
 
                 resultA.textContent = filteredA.length ? filteredA.join(', ') : '—';
                 resultB.textContent = filteredB.length ? filteredB.join(', ') : '—';
 
+                // Общее время работы (сумма длительностей)
+                const totalA = durationsA.reduce((sum, val) => sum + val, 0);
+                const totalB = durationsB.reduce((sum, val) => sum + val, 0);
+                totalTimeA.textContent = totalA > 0 ? formatTotalTime(totalA) : '—';
+                totalTimeB.textContent = totalB > 0 ? formatTotalTime(totalB) : '—';
+
                 // Переработка
-                const overtimeAValue = calcOvertime(timesA);
-                const overtimeBValue = calcOvertime(timesB);
+                let overtimeAValue = null;
+                let overtimeBValue = null;
+
+                if (filteredA.length >= 2) {
+                    const first = timeToMinutes(filteredA[0].replace(':', ''));
+                    const last = timeToMinutes(filteredA[filteredA.length - 1].replace(':', ''));
+                    let diff = last - first;
+                    if (diff < 0) diff += 1440;
+                    overtimeAValue = diff - NORM_MINUTES;
+                }
+
+                if (filteredB.length >= 2) {
+                    const first = timeToMinutes(filteredB[0].replace(':', ''));
+                    const last = timeToMinutes(filteredB[filteredB.length - 1].replace(':', ''));
+                    let diff = last - first;
+                    if (diff < 0) diff += 1440;
+                    overtimeBValue = diff - NORM_MINUTES;
+                }
 
                 overtimeA.textContent = formatOvertime(overtimeAValue);
                 overtimeA.className = 'result-value ' + getOvertimeClass(overtimeAValue);
@@ -818,23 +1048,32 @@
                 const countB = filteredB.length;
                 let compText = '';
                 if (countA > countB) {
-                    compText = `✅ Группа 1 заполнила больше часов (${countA} vs ${countB})`;
+                    compText = `✅ Группа 1 заполнила больше смен (${countA} vs ${countB})`;
                 } else if (countB > countA) {
-                    compText = `✅ Группа 2 заполнила больше часов (${countB} vs ${countA})`;
+                    compText = `✅ Группа 2 заполнила больше смен (${countB} vs ${countA})`;
                 } else {
-                    compText = `⚖️ Обе группы заполнили по ${countA} часов`;
+                    compText = `⚖️ Обе группы заполнили по ${countA} смен`;
                 }
+
                 if (filteredA.length && filteredB.length) {
-                    compText += ` · первая группа 1: ${filteredA[0]}, 2: ${filteredB[0]}`;
+                    compText += ` · первая смена 1: ${filteredA[0]}, 2: ${filteredB[0]}`;
+                }
+
+                if (totalA > 0 && totalB > 0) {
+                    if (totalA > totalB) {
+                        compText += ` · 📈 Группа 1 работала больше на ${formatTotalTime(totalA - totalB)}`;
+                    } else if (totalB > totalA) {
+                        compText += ` · 📈 Группа 2 работала больше на ${formatTotalTime(totalB - totalA)}`;
+                    } else {
+                        compText += ` · ⚖️ Общее время работы одинаковое`;
+                    }
                 }
 
                 if (overtimeAValue !== null && overtimeBValue !== null) {
                     if (overtimeAValue > overtimeBValue) {
-                        compText += ` · 📈 Группа 1 переработала больше на ${formatOvertime(overtimeAValue - overtimeBValue)}`;
+                        compText += ` · 📈 Переработка 1 больше на ${formatOvertime(overtimeAValue - overtimeBValue)}`;
                     } else if (overtimeBValue > overtimeAValue) {
-                        compText += ` · 📈 Группа 2 переработала больше на ${formatOvertime(overtimeBValue - overtimeAValue)}`;
-                    } else {
-                        compText += ` · ⚖️ Переработка одинаковая`;
+                        compText += ` · 📈 Переработка 2 больше на ${formatOvertime(overtimeBValue - overtimeAValue)}`;
                     }
                 }
 
@@ -851,12 +1090,10 @@
                 }
             }
 
-            // ---- ОБРАБОТЧИКИ КНОПОК ----
             clearStorageBtn.addEventListener('click', clearStorage);
             fillTemplateBtn.addEventListener('click', fillTemplate);
             swapBtn.addEventListener('click', swapGroups);
 
-            // Запуск
             init();
         })();
     </script>
